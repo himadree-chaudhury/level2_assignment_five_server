@@ -1,12 +1,48 @@
-import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { Request, Response } from "express";
+import expressSession from "express-session";
+import httpStatus from "http-status-codes";
 import morgan from "morgan";
-
+import envVariables from "./app/config/env";
+import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
+import { router } from "./app/routes";
 const app = express();
 
 app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(
+  expressSession({
+    secret: envVariables.EXPRESS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true if using HTTPS
+  })
+);
 
-app.get("/", (req, res) => {
+app.use("/api/v1", router);
+
+app.get("/api/v1", (req: Request, res: Response) => {
   res.send("Welcome to the Ride Booking API!");
+});
+
+app.use(globalErrorHandler);
+
+app.use((req: Request, res: Response) => {
+  res.status(httpStatus.NOT_FOUND).json({
+    status: false,
+    message: "Route Not Found",
+  });
 });
 
 export default app;
