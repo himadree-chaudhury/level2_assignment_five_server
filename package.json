@@ -1,8 +1,9 @@
 {
   "name": "assignment_5",
   "version": "1.0.0",
-  "description": "",
+  "description": "A secure, scalable, and role-based backend API for a ride booking system using Express.js and Mongoose.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,12 +11,13 @@
     "type": "git",
     "url": "git+https://github.com/himadree-chaudhury/level2_assignment_five_server.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/himadree-chaudhury/level2_assignment_five_server/issues"
-  },
-  "homepage": "https://github.com/himadree-chaudhury/level2_assignment_five_server#readme"
+  "keywords": [
+    "node",
+    "express",
+    "mongodb",
+    "mongoose",
+    "rest-api"
+  ],
+  "author": "Himadree Chaudhury",
+  "license": "ISC"
 }
