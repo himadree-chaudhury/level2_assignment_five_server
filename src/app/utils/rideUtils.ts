@@ -31,7 +31,7 @@ export const findNearestDriver = async (pickupLocation: {
   const allAvailableDrivers: IDriver[] = await Driver.find({
     isApproved: true,
     isSuspended: false,
-  });
+  }).populate("userId", "name phone");
 
   let nearestDriver = null;
   let shortestDistance = Infinity;
@@ -68,5 +68,5 @@ export const calculateFare = (distanceInKm: number): number => {
   const baseFare = 50; // e.g., BDT 50
   const perKmRate = 20; // e.g., BDT 20/km
 
-  return baseFare + distanceInKm * perKmRate;
+  return parseFloat((baseFare + distanceInKm * perKmRate).toFixed(2));
 };

@@ -13,6 +13,16 @@ driverRoutes.post(
   validateRequest(driverValidationSchema),
   DriverController.registerDriver
 );
+driverRoutes.get(
+  "/me/:driverId",
+  checkAuth(UserRole.DRIVER, UserRole.ADMIN),
+  DriverController.getDriverById
+);
+driverRoutes.get(
+  "/",
+  checkAuth(UserRole.ADMIN),
+  DriverController.getAllDrivers
+);
 driverRoutes.patch(
   "/approve/:driverId",
   checkAuth(UserRole.ADMIN),

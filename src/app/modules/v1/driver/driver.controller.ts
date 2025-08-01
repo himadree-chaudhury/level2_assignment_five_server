@@ -14,6 +14,28 @@ const registerDriver = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const getDriverById = asyncTryCatch(async (req: Request, res: Response) => {
+    const driverId = req.params.driverId;
+    const userId = req.authUser?.userId;
+  const driver = await DriverService.getDriverById(userId, driverId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Driver retrieved successfully",
+    data: driver,
+  });
+});
+
+const getAllDrivers = asyncTryCatch(async (req: Request, res: Response) => {
+  const drivers = await DriverService.getAllDrivers();
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Drivers retrieved successfully",
+    data: drivers,
+  });
+});
+
 const approveDriver = asyncTryCatch(async (req: Request, res: Response) => {
   const driverId = req.params.driverId;
   const driver = await DriverService.approveDriver(driverId);
@@ -40,7 +62,7 @@ const toggleAvailability = asyncTryCatch(
 );
 const updateLocation = asyncTryCatch(async (req: Request, res: Response) => {
   const driverId = req.params.driverId;
-    const location = req.body;
+  const location = req.body;
   const driver = await DriverService.updateLocation(driverId, location);
   genericResponse(res, {
     success: true,
@@ -52,6 +74,8 @@ const updateLocation = asyncTryCatch(async (req: Request, res: Response) => {
 
 export const DriverController = {
   registerDriver,
+  getDriverById,
+  getAllDrivers,
   approveDriver,
   toggleAvailability,
   updateLocation,

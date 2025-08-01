@@ -45,7 +45,17 @@ const createRide = async (payload: Partial<IRide>) => {
     fare,
   };
 
-  const ride = await Ride.create(ridePayload);
+  const ride = (
+    await (
+      await Ride.create(ridePayload)
+    ).populate(
+      "driverId",
+      "-_id -userId -createdAt -updatedAt -isApproved -isSuspended"
+    )
+  ).populate(
+    "riderId",
+    "-password -auths -isBlocked -isDeleted -isVerified -role -picture -_id -createdAt -updatedAt -email"
+  );
   return ride;
 };
 
@@ -120,7 +130,8 @@ const cancelRide = async (userId: string, userRole: string, rideId: string) => {
   }
 
   ride.status = RideStatus.CANCELLED;
-  ride.cancelledBy = userId;
+  ride.cancelledBy =
+    ride.riderId?.toString() === userId ? ride.riderId : ride.driverId;
   ride.cancelledAt = new Date();
   await ride.save();
 

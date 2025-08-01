@@ -55,7 +55,7 @@ export const checkAuth =
         });
         return next(error);
       }
-      req.user = isTokenValid;
+      req.authUser = isTokenValid;
       next();
     } catch (error) {
       return next(error);

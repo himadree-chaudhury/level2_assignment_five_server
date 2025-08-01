@@ -17,7 +17,7 @@ const createRide = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const acceptRide = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.user?.userId;
+  const driverId = req.authUser?.userId;
   const rideId = req.params.rideId;
 
   const ride = await RideService.acceptRide(driverId, rideId);
@@ -31,8 +31,8 @@ const acceptRide = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const cancelRide = asyncTryCatch(async (req: Request, res: Response) => {
-  const userId = req.user?.userId;
-  const userRole = req.user?.role;
+  const userId = req.authUser?.userId;
+  const userRole = req.authUser?.role;
   const rideId = req.params.rideId;
 
   const ride = await RideService.cancelRide(userId, userRole, rideId);
@@ -45,7 +45,7 @@ const cancelRide = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const pickupRide = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.user?.userId;
+  const driverId = req.authUser?.userId;
   const rideId = req.params.rideId;
 
   const ride = await RideService.pickupRide(driverId, rideId);
@@ -58,7 +58,7 @@ const pickupRide = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const completeRide = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.user?.userId;
+  const driverId = req.authUser?.userId;
   const rideId = req.params.rideId;
 
   const ride = await RideService.completeRide(driverId, rideId);
@@ -71,7 +71,7 @@ const completeRide = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getRideByHistory = asyncTryCatch(async (req: Request, res: Response) => {
-  const userId = req.user?.userId;
+  const userId = req.authUser?.userId;
   const rideId = req.params.rideId;
 
   const ride = await RideService.getRideByHistory(userId, rideId);

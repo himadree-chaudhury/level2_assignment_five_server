@@ -18,6 +18,33 @@ const registerDriver = async (payload: Partial<IDriver>) => {
   return driver;
 };
 
+const getDriverById = async (userId: string, driverId: string) => {
+  const driver = await Driver.findById(driverId);
+
+  if (!driver) {
+    const error = CustomError.notFound({
+      message: "Driver not found",
+      errors: ["The driver with the provided ID does not exist."],
+      hints: "Please check the driver ID and try again.",
+    });
+    throw error;
+  }
+  if (driver.userId.toString() !== userId) {
+    const error = CustomError.forbidden({
+      message: "Forbidden",
+      errors: ["You do not have permission to access this driver."],
+      hints: "Please check your permissions and try again.",
+    });
+    throw error;
+  }
+  return driver;
+};
+
+const getAllDrivers = async () => {
+  const drivers = await Driver.find().populate("userId", "name").lean();
+  return drivers;
+};
+
 const approveDriver = async (driverId: string) => {
   const driver = await Driver.findByIdAndUpdate(
     driverId,
@@ -85,6 +112,8 @@ const updateLocation = async (driverId: string, location: IUpdateLocation) => {
 
 export const DriverService = {
   registerDriver,
+  getDriverById,
+  getAllDrivers,
   approveDriver,
   toggleAvailability,
   updateLocation,

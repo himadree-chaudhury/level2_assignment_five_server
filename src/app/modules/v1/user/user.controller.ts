@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { asyncTryCatch } from "../../../utils/asyncTryCatch";
-import { CustomError } from "../../../utils/error";
 import { genericResponse } from "../../../utils/genericResponse";
 import { userService } from "./user.service";
 
@@ -29,24 +28,8 @@ const getAllUsers = asyncTryCatch(async (req: Request, res: Response) => {
 
 const getUserById = asyncTryCatch(async (req: Request, res: Response) => {
   const userId = req.params.userId;
-  const tokenUser: any = req.user;
-  if (!tokenUser || !tokenUser.userId) {
-    const error = CustomError.unauthorized({
-      message: "Unauthorized access",
-      errors: ["User not authenticated"],
-      hints: "Please login to access this resource.",
-    });
-    throw error;
-  }
-  if (userId !== tokenUser.userId) {
-    const error = CustomError.forbidden({
-      message: "You are not allowed to access this user",
-      errors: ["Insufficient permissions"],
-      hints: "Please check your permissions and try again.",
-    });
-    throw error;
-  }
-  const user = await userService.getUserById(userId);
+  const tokenUserId = req.authUser?.userId;
+  const user = await userService.getUserById(tokenUserId, userId);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
