@@ -14,7 +14,6 @@ export interface IDriver {
         expirationDate: Date;
     };
     isAvailable: boolean;
-    isOnline?: boolean;
     rating?: number;
     currentLocation?: {
         latitude: number;

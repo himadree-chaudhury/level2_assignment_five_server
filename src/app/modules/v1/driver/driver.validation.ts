@@ -54,11 +54,3 @@ export const updateLocationValidationSchema = z.object({
       .max(180, "Longitude must be between -180 and 180"),
   }),
 });
-
-// example json for updateLocationValidationSchema
-// {
-//   "currentLocation": {
-//     "latitude": 37.7749,
-//     "longitude": -122.4194
-//   }
-// }

@@ -12,7 +12,7 @@ export enum RideStatus {
 export interface IRide {
   _id?: string;
   riderId: Types.ObjectId;
-  driverId: Types.ObjectId;
+  driverId?: Types.ObjectId;
   pickupLocation: {
     latitude: number;
     longitude: number;
@@ -24,7 +24,7 @@ export interface IRide {
   status: RideStatus;
   fare: number;
   requestedAt?: Date;
-  cancelledBy?: "RIDER" | "DRIVER";
+  cancelledBy?: Types.ObjectId;
   cancelledAt?: Date;
   acceptedAt?: Date;
   pickedUpAt?: Date;

@@ -9,7 +9,7 @@ export const driverRoutes = Router();
 
 driverRoutes.post(
   "/register",
-  checkAuth(UserRole.RIDER, UserRole.ADMIN),
+  checkAuth(UserRole.RIDER),
   validateRequest(driverValidationSchema),
   DriverController.registerDriver
 );
@@ -20,12 +20,12 @@ driverRoutes.patch(
 );
 driverRoutes.patch(
   "/availability/:driverId",
-  checkAuth(UserRole.DRIVER, UserRole.ADMIN),
+  checkAuth(UserRole.DRIVER),
   DriverController.toggleAvailability
 );
 driverRoutes.patch(
   "/update-location/:driverId",
-    checkAuth(UserRole.DRIVER, UserRole.ADMIN),
+  checkAuth(UserRole.DRIVER),
   validateRequest(updateLocationValidationSchema),
   DriverController.updateLocation
 );

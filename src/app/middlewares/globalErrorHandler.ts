@@ -2,9 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import mongoose from "mongoose";
 import { ZodError } from "zod";
-import logger from "../config/winston";
-import { getTraceId } from "../utils/traceId";
 import { CustomError } from "../utils/error";
+import { getTraceId } from "../utils/traceId";
 
 export const globalErrorHandler = (
   err: any,
@@ -103,12 +102,6 @@ export const globalErrorHandler = (
       ...error,
     };
   }
-
-  // !Log only errors with traceId
-  logger.error(
-    `${error.message} - Status Code: ${error.status} - Trace ID: ${traceId}`
-  );
-
   res.status(error.status || 500).json(error);
 
   next(err);

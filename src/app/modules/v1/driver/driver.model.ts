@@ -19,7 +19,6 @@ const driverSchema = new mongoose.Schema<IDriver>(
       expirationDate: { type: Date, required: true },
     },
     isAvailable: { type: Boolean },
-    isOnline: { type: Boolean },
     rating: { type: Number, default: 0 },
     currentLocation: {
       latitude: { type: Number, required: true },
@@ -38,7 +37,6 @@ driverSchema.pre("save", function (next) {
   if (this.isNew) {
     this.isApproved = false;
     this.isSuspended = false;
-    this.isOnline = false;
   }
   next();
 });
