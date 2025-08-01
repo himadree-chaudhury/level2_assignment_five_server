@@ -11,7 +11,7 @@ export const traceIdMiddleware = (
   next: NextFunction
 ) => {
   const incomingTraceId = req.headers["x-trace-id"]?.toString();
-  const traceId = incomingTraceId || randomUUID();
+    const traceId = incomingTraceId || randomUUID();
 
   setTraceId(traceId);
   next();

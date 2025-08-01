@@ -3,8 +3,8 @@ import httpStatus from "http-status-codes";
 import mongoose from "mongoose";
 import { ZodError } from "zod";
 import logger from "../config/winston";
-import { CustomError } from "../utils/Error";
 import { getTraceId } from "../utils/traceId";
+import { CustomError } from "../utils/error";
 
 export const globalErrorHandler = (
   err: any,
@@ -18,7 +18,7 @@ export const globalErrorHandler = (
   let error = {
     status: err.status || 500,
     message: err.message || "Internal Server Error",
-    trace_id: traceId || "N/A",
+    trace_id: traceId,
     errors: err.errors || [],
     hints: err.hints,
   };
@@ -29,7 +29,7 @@ export const globalErrorHandler = (
       ...error,
       status: httpStatus.UNAUTHORIZED,
       message: "Token has expired.",
-      hints: "Please log in again to obtain a new token.",
+      hints: "Please login again to obtain a new access token.",
     };
   }
 
@@ -78,7 +78,7 @@ export const globalErrorHandler = (
         value: err.value,
         kind: err.kind,
       },
-      hints: "Please check the request data and try again.",
+      hints: "Please ensure the value is in the correct format and try again.",
     };
   }
   // !Handle Mongoose MongoServerError (e.g., duplicate key)
@@ -96,7 +96,7 @@ export const globalErrorHandler = (
           Object.values(err.keyValue)[0]
         }' for field '${Object.keys(err.keyValue)[0]}'`,
       },
-      hints: "Please check the request data and try again.",
+      hints: "Please ensure the value is unique and try again.",
     };
   } else if (err instanceof CustomError) {
     error = {

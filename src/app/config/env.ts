@@ -8,8 +8,10 @@ const envVariables = cleanEnv(process.env, {
   NODE_ENV: str(),
   DB_URL: str(),
   EXPRESS_SESSION_SECRET: str(),
-  JWT_SECRET: str(),
-  JWT_EXPIRATION: str(),
+  JWT_ACCESS_SECRET: str(),
+  JWT_REFRESH_SECRET: str(),
+  JWT_ACCESS_TOKEN_EXPIRATION: str(),
+  JWT_REFRESH_TOKEN_EXPIRATION: str(),
   BCRYPT_SALT_ROUNDS: num(),
 });
 

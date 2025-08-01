@@ -5,7 +5,9 @@ import expressSession from "express-session";
 import httpStatus from "http-status-codes";
 import morgan from "morgan";
 import envVariables from "./app/config/env";
+import "./app/config/passport";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
+import { traceIdMiddleware } from "./app/middlewares/traceIdHandler";
 import { router } from "./app/routes";
 const app = express();
 
@@ -21,14 +23,15 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-  expressSession({
-    secret: envVariables.EXPRESS_SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }, // Set to true if using HTTPS
-  })
-);
+// app.use(
+//   expressSession({
+//     secret: envVariables.EXPRESS_SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: false }, // Set to true if using HTTPS
+//   })
+// );
+app.use(traceIdMiddleware);
 
 app.use("/api/v1", router);
 
