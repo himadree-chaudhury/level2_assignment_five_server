@@ -1,10 +1,8 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
-import expressSession from "express-session";
 import httpStatus from "http-status-codes";
 import morgan from "morgan";
-import envVariables from "./app/config/env";
 import "./app/config/passport";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { traceIdMiddleware } from "./app/middlewares/traceIdHandler";
