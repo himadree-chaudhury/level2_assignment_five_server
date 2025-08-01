@@ -29,7 +29,7 @@ const getAllUsers = asyncTryCatch(async (req: Request, res: Response) => {
 
 const getUserById = asyncTryCatch(async (req: Request, res: Response) => {
   const userId = req.params.userId;
-  const tokenUser = req.user;
+  const tokenUser: any = req.user;
   if (!tokenUser || !tokenUser.userId) {
     const error = CustomError.unauthorized({
       message: "Unauthorized access",
@@ -55,9 +55,25 @@ const getUserById = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
-const blockUser = asyncTryCatch(async (req: Request, res: Response) => {});
+const blockUser = asyncTryCatch(async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  await userService.blockUser(userId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "User blocked successfully",
+  });
+});
 
-const unblockUser = asyncTryCatch(async (req: Request, res: Response) => {});
+const unblockUser = asyncTryCatch(async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  await userService.unblockUser(userId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "User unblocked successfully",
+  });
+});
 
 export const userController = {
   credentialRegister,

@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import envVariables from "../../../config/env";
+import { CustomError } from "../../../utils/error";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
-import { CustomError } from "../../../utils/error";
 
 const credentialRegister = async (payload: Partial<IUser>) => {
   const hashedPassword = await bcrypt.hash(
@@ -21,7 +21,16 @@ const credentialRegister = async (payload: Partial<IUser>) => {
   };
 
   const user = await User.create(userPayload);
-  return user;
+  return {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    picture: user.picture,
+    phone: user.phone,
+    role: user.role,
+    isBlocked: user.isBlocked,
+    isVerified: user.isVerified,
+  };
 };
 
 const getAllUsers = async () => {
@@ -32,17 +41,52 @@ const getAllUsers = async () => {
 const getUserById = async (userId: string) => {
   const user = await User.findById(userId).select("-password -auths").lean();
   if (!user) {
-    throw CustomError.notFound({
+    const error = CustomError.notFound({
       message: "User not found",
       errors: ["The user with the provided ID does not exist."],
       hints: "Please check the user ID and try again.",
     });
+    throw error;
   }
   return user;
+};
+
+const blockUser = async (userId: string) => {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { isBlocked: true },
+    { new: true }
+  );
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+};
+
+const unblockUser = async (userId: string) => {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { isBlocked: false },
+    { new: true }
+  );
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
 };
 
 export const userService = {
   credentialRegister,
   getAllUsers,
   getUserById,
+  blockUser,
+  unblockUser,
 };
