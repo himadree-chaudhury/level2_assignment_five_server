@@ -71,7 +71,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\" : \"{{$randomFullName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"{{$randomPassword}}\"\r\n}",
+									"raw": "{\r\n    \"name\" : \"Theresa Nienow\",\r\n    \"email\": \"Abby_Langosh@yahoo.com\",\r\n    \"password\": \"K2JeqPNRVZLg4jF\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -79,11 +79,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_api}}/user/register",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/register",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"register"
 									]
@@ -194,7 +199,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\" : \"{{$randomFullName}}\",\r\n    \"phone\" : \"{{$randomPhoneNumber}}\",\r\n    \"picture\" : \"{{$randomAvatarImage}}\"\r\n}",
+									"raw": "{\r\n    \"name\" : \"Cesar Cartwright\",\r\n    \"phone\" : \"986-776-8142\",\r\n    \"picture\" : \"https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/567.jpg\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -202,11 +207,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_api}}/user/update",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/update",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"update"
 									]
@@ -321,11 +331,16 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/user/verify-request",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/verify-request",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"verify-request"
 									]
@@ -436,7 +451,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"verificationCode\" : \"{{verifyToken}}\"\r\n}",
+									"raw": "{\r\n    \"verificationCode\" : \"\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -444,11 +459,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_api}}/user/verify",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/verify",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"verify"
 									]
@@ -576,11 +596,16 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/user/me",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/me",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"me"
 									]
@@ -688,11 +713,16 @@
 								"method": "PATCH",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/user/block/:userId",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/block/:userId",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"block",
 										":userId"
@@ -700,7 +730,7 @@
 									"variable": [
 										{
 											"key": "userId",
-											"value": "{{riderId}}"
+											"value": ""
 										}
 									]
 								}
@@ -890,11 +920,16 @@
 								"method": "PATCH",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/user/unblock/:userId",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/unblock/:userId",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"unblock",
 										":userId"
@@ -902,7 +937,7 @@
 									"variable": [
 										{
 											"key": "userId",
-											"value": "{{riderId}}"
+											"value": ""
 										}
 									]
 								}
@@ -1009,11 +1044,16 @@
 								"method": "PATCH",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/user/delete/:userId",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/user/delete/:userId",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"user",
 										"delete",
 										":userId"
@@ -1021,7 +1061,7 @@
 									"variable": [
 										{
 											"key": "userId",
-											"value": "{{riderId}}"
+											"value": ""
 										}
 									]
 								}
@@ -1116,14 +1156,7 @@
 							],
 							"request": {
 								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{accessToken}}",
-											"type": "string"
-										}
-									]
+									"type": "noauth"
 								},
 								"method": "POST",
 								"header": [],
@@ -1155,7 +1188,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"email\": \"{{adminEmail}}\",\r\n    \"password\": \"{{adminPassword}}\"\r\n}",
+											"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1163,11 +1196,16 @@
 											}
 										},
 										"url": {
-											"raw": "{{base_api}}/auth/login",
+											"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/login",
+											"protocol": "https",
 											"host": [
-												"{{base_api}}"
+												"ride-booking-backend-himadree",
+												"vercel",
+												"app"
 											],
 											"path": [
+												"api",
+												"v1",
 												"auth",
 												"login"
 											]
@@ -1291,11 +1329,16 @@
 										"method": "POST",
 										"header": [],
 										"url": {
-											"raw": "{{base_api}}/auth/refresh-token",
+											"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/refresh-token",
+											"protocol": "https",
 											"host": [
-												"{{base_api}}"
+												"ride-booking-backend-himadree",
+												"vercel",
+												"app"
 											],
 											"path": [
+												"api",
+												"v1",
 												"auth",
 												"refresh-token"
 											]
@@ -1417,11 +1460,16 @@
 										"method": "POST",
 										"header": [],
 										"url": {
-											"raw": "{{base_api}}/auth/logout",
+											"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/logout",
+											"protocol": "https",
 											"host": [
-												"{{base_api}}"
+												"ride-booking-backend-himadree",
+												"vercel",
+												"app"
 											],
 											"path": [
+												"api",
+												"v1",
 												"auth",
 												"logout"
 											]
@@ -1598,14 +1646,7 @@
 							],
 							"request": {
 								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{accessToken}}",
-											"type": "string"
-										}
-									]
+									"type": "noauth"
 								},
 								"method": "POST",
 								"header": [],
@@ -1637,7 +1678,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"email\": \"{{driverEmail}}\",\r\n    \"password\": \"{{driverPassword}}\"\r\n}",
+											"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1645,11 +1686,16 @@
 											}
 										},
 										"url": {
-											"raw": "{{base_api}}/auth/login",
+											"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/login",
+											"protocol": "https",
 											"host": [
-												"{{base_api}}"
+												"ride-booking-backend-himadree",
+												"vercel",
+												"app"
 											],
 											"path": [
+												"api",
+												"v1",
 												"auth",
 												"login"
 											]
@@ -1773,11 +1819,16 @@
 										"method": "POST",
 										"header": [],
 										"url": {
-											"raw": "{{base_api}}/auth/refresh-token",
+											"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/refresh-token",
+											"protocol": "https",
 											"host": [
-												"{{base_api}}"
+												"ride-booking-backend-himadree",
+												"vercel",
+												"app"
 											],
 											"path": [
+												"api",
+												"v1",
 												"auth",
 												"refresh-token"
 											]
@@ -1899,11 +1950,16 @@
 										"method": "POST",
 										"header": [],
 										"url": {
-											"raw": "{{base_api}}/auth/logout",
+											"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/logout",
+											"protocol": "https",
 											"host": [
-												"{{base_api}}"
+												"ride-booking-backend-himadree",
+												"vercel",
+												"app"
 											],
 											"path": [
+												"api",
+												"v1",
 												"auth",
 												"logout"
 											]
@@ -2107,7 +2163,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"{{riderEmail}}\",\r\n    \"password\": \"{{riderPassword}}\"\r\n}",
+									"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2115,11 +2171,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_api}}/auth/login",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/login",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"auth",
 										"login"
 									]
@@ -2243,11 +2304,16 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/auth/refresh-token",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/refresh-token",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"auth",
 										"refresh-token"
 									]
@@ -2371,11 +2437,16 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/auth/logout",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/auth/logout",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"auth",
 										"logout"
 									]
@@ -2514,7 +2585,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"vehicleInfo\": {\r\n        \"model\": \"Toyota Camry\",\r\n        \"registrationNumber\": \"ABC123\",\r\n        \"year\": 2020,\r\n        \"maxPassengers\": 5\r\n    },\r\n    \"driverLicense\": {\r\n        \"number\": \"D1234567\",\r\n        \"expirationDate\": \"{{$randomDateFuture}}\"\r\n    },\r\n    \"isAvailable\": true,\r\n    \"currentLocation\": {\r\n        \"latitude\": {{$randomLatitude}},\r\n        \"longitude\": {{$randomLongitude}}\r\n    }\r\n}",
+									"raw": "{\r\n    \"vehicleInfo\": {\r\n        \"model\": \"Toyota Camry\",\r\n        \"registrationNumber\": \"ABC123\",\r\n        \"year\": 2020,\r\n        \"maxPassengers\": 5\r\n    },\r\n    \"driverLicense\": {\r\n        \"number\": \"D1234567\",\r\n        \"expirationDate\": \"Tue Feb 03 2026 00:37:10 GMT+0600 (Bangladesh Standard Time)\"\r\n    },\r\n    \"isAvailable\": true,\r\n    \"currentLocation\": {\r\n        \"latitude\": 33.6583,\r\n        \"longitude\": -135.6618\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2522,11 +2593,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_api}}/driver/register",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/driver/register",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"driver",
 										"register"
 									]
@@ -2627,11 +2703,16 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_api}}/driver/me",
+									"raw": "https://ride-booking-backend-himadree.vercel.app/api/v1/driver/me",
+									"protocol": "https",
 									"host": [
-										"{{base_api}}"
+										"ride-booking-backend-himadree",
+										"vercel",
+										"app"
 									],
 									"path": [
+										"api",
+										"v1",
 										"driver",
 										"me"
 									]
@@ -3337,7 +3418,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pickupLocation\": {\r\n        \"latitude\": 80.0282,\r\n        \"longitude\": -114.7214\r\n    },\r\n    \"destinationLocation\": {\r\n        \"latitude\": {{$randomLatitude}},\r\n        \"longitude\": {{$randomLongitude}}\r\n    }\r\n}",
+							"raw": "{\r\n    \"pickupLocation\": {\r\n        \"latitude\": {{$randomLatitude}},\r\n        \"longitude\": {{$randomLongitude}}\r\n    },\r\n    \"destinationLocation\": {\r\n        \"latitude\": {{$randomLatitude}},\r\n        \"longitude\": {{$randomLongitude}}\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
