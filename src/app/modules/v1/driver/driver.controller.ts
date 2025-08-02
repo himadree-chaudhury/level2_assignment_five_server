@@ -16,9 +16,8 @@ const registerDriver = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getDriverById = asyncTryCatch(async (req: Request, res: Response) => {
-    const driverId = req.params.driverId;
-    const userId = req.authUser?.userId;
-  const driver = await DriverService.getDriverById(userId, driverId);
+  const userId = req.authUser?.userId;
+  const driver = await DriverService.getDriverById(userId);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
@@ -48,20 +47,22 @@ const approveDriver = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
-const toggleSuspendDriver = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.params.driverId;
-  const driver = await DriverService.toggleSuspendDriver(driverId);
-  genericResponse(res, {
-    success: true,
-    status: httpStatus.OK,
-    message: "Driver suspended successfully",
-    data: driver,
-  });
-});
+const toggleSuspendDriver = asyncTryCatch(
+  async (req: Request, res: Response) => {
+    const driverId = req.params.driverId;
+    const driver = await DriverService.toggleSuspendDriver(driverId);
+    genericResponse(res, {
+      success: true,
+      status: httpStatus.OK,
+      message: "Driver suspended successfully",
+      data: driver,
+    });
+  }
+);
 
 const toggleAvailability = asyncTryCatch(
   async (req: Request, res: Response) => {
-    const driverId = req.params.driverId;
+    const driverId = req.authUser?.userId;
     const driver = await DriverService.toggleAvailability(driverId);
     genericResponse(res, {
       success: true,
@@ -73,7 +74,7 @@ const toggleAvailability = asyncTryCatch(
   }
 );
 const updateLocation = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.params.driverId;
+  const driverId = req.authUser?.userId;
   const location = req.body;
   const driver = await DriverService.updateLocation(driverId, location);
   genericResponse(res, {

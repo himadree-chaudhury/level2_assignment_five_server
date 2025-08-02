@@ -27,9 +27,8 @@ const getAllUsers = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getUserById = asyncTryCatch(async (req: Request, res: Response) => {
-  const userId = req.params.userId;
-  const tokenUserId = req.authUser?.userId;
-  const user = await userService.getUserById(tokenUserId, userId);
+  const userId = req.authUser?.userId;
+  const user = await userService.getUserById(userId);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,

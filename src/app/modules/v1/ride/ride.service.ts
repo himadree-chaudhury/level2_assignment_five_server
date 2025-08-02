@@ -31,7 +31,7 @@ const createRide = async (payload: Partial<IRide>) => {
     riderDetails.isDeleted ||
     !riderDetails.phone
   ) {
-    const error = CustomError.notFound({
+    const error = CustomError.forbidden({
       message: "Rider not found or not eligible",
       errors: [
         "The rider with the provided ID does not exist or is not eligible.",
@@ -257,15 +257,10 @@ const getRideByHistory = async (userId: string, rideId: string) => {
         hints: "Please check the ride details and try again.",
       });
       throw error;
-    } else {
-      const error = CustomError.forbidden({
-        message: "You are not authorized to cancel this ride",
-        errors: ["The ride does not belong to the user."],
-        hints: "Please check the ride details and try again.",
-      });
-      throw error;
     }
+    return ride;
   }
+
   return ride;
 };
 

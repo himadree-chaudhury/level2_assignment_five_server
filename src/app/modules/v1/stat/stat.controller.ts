@@ -35,7 +35,7 @@ const getRidesStats = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getRiderStats = asyncTryCatch(async (req: Request, res: Response) => {
-  const riderId = req.params.riderId;
+  const riderId = req.authUser?.userId;
   const riderStats = await StatService.getRiderStats(riderId);
  
   genericResponse(res, {
@@ -47,7 +47,7 @@ const getRiderStats = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getDriverStats = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.params.driverId;
+  const driverId = req.authUser?.userId;
   const driverStats = await StatService.getDriverStats(driverId);
   genericResponse(res, {
     success: true,
