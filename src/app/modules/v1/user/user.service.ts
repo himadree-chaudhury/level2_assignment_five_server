@@ -34,12 +34,12 @@ const credentialRegister = async (payload: Partial<IUser>) => {
 };
 
 const getAllUsers = async () => {
-  const users = await User.find().select("-password -auths").lean();
+  const users = await User.find().select("-password -auths -_id").lean();
   return users;
 };
 
 const getUserById = async (tokenUserId: string, userId: string) => {
-  const user = await User.findById(userId).select("-password -auths").lean();
+  const user = await User.findById(userId).select("-password -auths -_id").lean();
   if (!user) {
     const error = CustomError.notFound({
       message: "User not found",
@@ -48,7 +48,7 @@ const getUserById = async (tokenUserId: string, userId: string) => {
     });
     throw error;
   }
-  if (user._id.toString() !== tokenUserId) {
+  if (userId.toString() !== tokenUserId) {
     const error = CustomError.forbidden({
       message: "Access denied",
       errors: ["You do not have permission to access this user."],

@@ -19,7 +19,7 @@ const driverSchema = new mongoose.Schema<IDriver>(
       expirationDate: { type: Date, required: true },
     },
     isAvailable: { type: Boolean },
-    rating: { type: Number, default: 0 },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
     currentLocation: {
       latitude: { type: Number, required: true },
       longitude: { type: Number, required: true },

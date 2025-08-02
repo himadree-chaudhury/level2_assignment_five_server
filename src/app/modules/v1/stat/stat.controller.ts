@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { asyncTryCatch } from "../../../utils/asyncTryCatch";
 import { genericResponse } from "../../../utils/genericResponse";
-import { AdminService } from "./admin.service";
+import { StatService } from "./stat.service";
 
 const getUsersStats = asyncTryCatch(async (req: Request, res: Response) => {
-  const usersStats = await AdminService.getUsersStats();
+  const usersStats = await StatService.getUsersStats();
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
@@ -15,7 +15,7 @@ const getUsersStats = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getDriversStats = asyncTryCatch(async (req: Request, res: Response) => {
-  const driversStats = await AdminService.getDriversStats();
+  const driversStats = await StatService.getDriversStats();
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
@@ -25,7 +25,7 @@ const getDriversStats = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getRidesStats = asyncTryCatch(async (req: Request, res: Response) => {
-  const ridesStats = await AdminService.getRidesStats();
+  const ridesStats = await StatService.getRidesStats();
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
@@ -34,8 +34,33 @@ const getRidesStats = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
-export const AdminController = {
+const getRiderStats = asyncTryCatch(async (req: Request, res: Response) => {
+  const riderId = req.params.riderId;
+  const riderStats = await StatService.getRiderStats(riderId);
+ 
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Rider statistics retrieved successfully",
+    data: riderStats,
+  });
+});
+
+const getDriverStats = asyncTryCatch(async (req: Request, res: Response) => {
+  const driverId = req.params.driverId;
+  const driverStats = await StatService.getDriverStats(driverId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Driver statistics retrieved successfully",
+    data: driverStats,
+  });
+});
+
+export const StatController = {
   getUsersStats,
   getDriversStats,
   getRidesStats,
+  getRiderStats,
+  getDriverStats,
 };
