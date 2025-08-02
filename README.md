@@ -4,7 +4,6 @@
 ![Express.js](https://img.shields.io/badge/Express.js-v5.1.0-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v8.17.0-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-v5.8.3-blue)
-![License](https://img.shields.io/badge/License-ISC-blue)
 
 ## Overview
 
@@ -162,8 +161,6 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/your-feature`).
 5. Open a pull request.
 
-## License
-This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details.
 
 ## Author
 Himadree Chaudhury
