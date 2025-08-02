@@ -14,7 +14,43 @@ const registerDriver = async (payload: Partial<IDriver>) => {
     });
     throw error;
   }
+
+  if (user.role !== UserRole.RIDER) {
+    const error = CustomError.forbidden({
+      message: "Forbidden",
+      errors: ["Only riders can register as drivers."],
+      hints:
+        "Please ensure the user is a rider before registering as a driver.",
+    });
+    throw error;
+  }
+
+  if (!user.isVerified) {
+    const error = CustomError.forbidden({
+      message: "User not verified",
+      errors: ["The user must be verified before registering as a driver."],
+      hints:
+        "Please verify the user before proceeding with driver registration.",
+    });
+    throw error;
+  }
+
+  const existingDriver = await Driver.findOne({ userId: payload.userId });
+  if (existingDriver) {
+    const error = CustomError.conflict({
+      message: "Driver already registered",
+      errors: ["A driver with this user ID already exists."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
   const driver = await Driver.create(payload);
+  await User.findByIdAndUpdate(
+    payload.userId,
+    { role: UserRole.DRIVER },
+    { new: true }
+  );
+
   return driver;
 };
 
@@ -77,6 +113,24 @@ const approveDriver = async (driverId: string) => {
   return driver;
 };
 
+const toggleSuspendDriver = async (driverId: string) => {
+  const driver = await Driver.findById(driverId);
+
+  if (!driver) {
+    const error = CustomError.notFound({
+      message: "Driver not found",
+      errors: ["The driver with the provided ID does not exist."],
+      hints: "Please check the driver ID and try again.",
+    });
+    throw error;
+  }
+
+  driver.isSuspended = !driver.isSuspended;
+  await driver.save();
+
+  return driver;
+};
+
 const toggleAvailability = async (driverId: string) => {
   const driver = await Driver.findById(driverId);
   if (!driver) {
@@ -115,6 +169,7 @@ export const DriverService = {
   getDriverById,
   getAllDrivers,
   approveDriver,
+  toggleSuspendDriver,
   toggleAvailability,
   updateLocation,
 };

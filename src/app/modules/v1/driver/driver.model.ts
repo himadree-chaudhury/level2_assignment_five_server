@@ -7,6 +7,7 @@ const driverSchema = new mongoose.Schema<IDriver>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
     vehicleInfo: {
       model: { type: String, required: true },

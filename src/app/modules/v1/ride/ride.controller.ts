@@ -6,7 +6,8 @@ import { RideService } from "./ride.service";
 
 const createRide = asyncTryCatch(async (req: Request, res: Response) => {
   const rideData = req.body;
-  const ride = await RideService.createRide(rideData);
+  const riderId = req.authUser?.userId;
+  const ride = await RideService.createRide({ ...rideData, riderId });
 
   genericResponse(res, {
     success: true,

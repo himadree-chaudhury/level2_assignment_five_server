@@ -13,6 +13,10 @@ const envVariables = cleanEnv(process.env, {
   JWT_ACCESS_TOKEN_EXPIRATION: str(),
   JWT_REFRESH_TOKEN_EXPIRATION: str(),
   BCRYPT_SALT_ROUNDS: num(),
+  REDIS_USERNAME: str(),
+  REDIS_PASSWORD: str(),
+  REDIS_HOST: str(),
+  REDIS_PORT: port(),
 });
 
 export default envVariables;

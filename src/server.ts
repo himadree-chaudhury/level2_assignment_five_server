@@ -2,6 +2,7 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import envVariables from "./app/config/env";
+import { connectRedis } from "./app/config/redis";
 
 let server: Server;
 
@@ -19,7 +20,10 @@ const startServer = async () => {
   }
 };
 
-startServer();
+(async () => {
+  await connectRedis();
+  await startServer();
+})();
 
 // *Graceful shutdown on process termination signals
 process.on("SIGTERM", () => {

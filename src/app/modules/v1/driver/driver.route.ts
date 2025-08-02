@@ -3,7 +3,10 @@ import { checkAuth } from "../../../middlewares/checkAuth";
 import { validateRequest } from "../../../middlewares/validateRequest";
 import { UserRole } from "../user/user.interface";
 import { DriverController } from "./driver.controller";
-import { driverValidationSchema, updateLocationValidationSchema } from "./driver.validation";
+import {
+  driverValidationSchema,
+  updateLocationValidationSchema,
+} from "./driver.validation";
 
 export const driverRoutes = Router();
 
@@ -15,7 +18,7 @@ driverRoutes.post(
 );
 driverRoutes.get(
   "/me/:driverId",
-  checkAuth(UserRole.DRIVER, UserRole.ADMIN),
+  checkAuth(UserRole.DRIVER),
   DriverController.getDriverById
 );
 driverRoutes.get(
@@ -28,6 +31,12 @@ driverRoutes.patch(
   checkAuth(UserRole.ADMIN),
   DriverController.approveDriver
 );
+driverRoutes.patch(
+  "/suspend/:driverId",
+  checkAuth(UserRole.ADMIN),
+  DriverController.toggleSuspendDriver
+);
+
 driverRoutes.patch(
   "/availability/:driverId",
   checkAuth(UserRole.DRIVER),

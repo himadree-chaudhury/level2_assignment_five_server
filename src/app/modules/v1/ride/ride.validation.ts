@@ -1,7 +1,6 @@
 import z from "zod";
 
 export const rideValidationSchema = z.object({
-  riderId: z.string("Rider ID is required").min(1, "Rider ID cannot be empty"),
   pickupLocation: z.object({
     latitude: z
       .number("Please enter a valid latitude")

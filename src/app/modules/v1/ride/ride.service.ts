@@ -4,6 +4,8 @@ import {
   findNearestDriver,
   haversineDistance,
 } from "../../../utils/rideUtils";
+import { Driver } from "../driver/driver.model";
+import { User } from "../user/user.model";
 import { IRide, RideStatus } from "./ride.interface";
 import { Ride } from "./ride.model";
 
@@ -17,6 +19,27 @@ const createRide = async (payload: Partial<IRide>) => {
       ],
       hints: "Please provide valid pickup and destination locations.",
     });
+  }
+
+  const riderDetails = await User.findById(payload.riderId).select(
+    "-password -auths -isVerified -role -picture -_id -createdAt -updatedAt -email"
+  );
+
+  if (
+    !riderDetails ||
+    riderDetails.isBlocked ||
+    riderDetails.isDeleted ||
+    !riderDetails.phone
+  ) {
+    const error = CustomError.notFound({
+      message: "Rider not found or not eligible",
+      errors: [
+        "The rider with the provided ID does not exist or is not eligible.",
+      ],
+      hints:
+        "Please check the rider ID and ensure the rider is active and has a valid phone number.",
+    });
+    throw error;
   }
 
   const match = await findNearestDriver(payload.pickupLocation);
@@ -88,6 +111,12 @@ const acceptRide = async (driverId: string, rideId: string) => {
   ride.status = RideStatus.ACCEPTED;
   ride.acceptedAt = new Date();
   await ride.save();
+
+  await Driver.findByIdAndUpdate(
+    driverId,
+    { isAvailable: false },
+    { new: true }
+  );
 
   return ride;
 };
@@ -200,6 +229,12 @@ const completeRide = async (driverId: string, rideId: string) => {
   ride.status = RideStatus.COMPLETED;
   ride.completedAt = new Date();
   await ride.save();
+
+  await Driver.findByIdAndUpdate(
+    driverId,
+    { isAvailable: true },
+    { new: true }
+  );
 
   return ride;
 };

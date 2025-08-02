@@ -1,9 +1,6 @@
 import z from "zod";
 
 export const driverValidationSchema = z.object({
-  userId: z
-    .string("Please provide a valid user ID")
-    .min(1, "User ID cannot be empty"),
   vehicleInfo: z.object({
     model: z
       .string("Please enter the vehicle model")

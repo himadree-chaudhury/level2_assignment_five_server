@@ -5,7 +5,8 @@ import { genericResponse } from "../../../utils/genericResponse";
 import { DriverService } from "./driver.service";
 
 const registerDriver = asyncTryCatch(async (req: Request, res: Response) => {
-  const driver = await DriverService.registerDriver(req.body);
+  const userId = req.authUser?.userId;
+  const driver = await DriverService.registerDriver({ ...req.body, userId });
   genericResponse(res, {
     success: true,
     status: httpStatus.CREATED,
@@ -47,6 +48,17 @@ const approveDriver = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const toggleSuspendDriver = asyncTryCatch(async (req: Request, res: Response) => {
+  const driverId = req.params.driverId;
+  const driver = await DriverService.toggleSuspendDriver(driverId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Driver suspended successfully",
+    data: driver,
+  });
+});
+
 const toggleAvailability = asyncTryCatch(
   async (req: Request, res: Response) => {
     const driverId = req.params.driverId;
@@ -77,6 +89,7 @@ export const DriverController = {
   getDriverById,
   getAllDrivers,
   approveDriver,
+  toggleSuspendDriver,
   toggleAvailability,
   updateLocation,
 };

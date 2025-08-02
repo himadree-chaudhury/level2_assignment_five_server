@@ -72,7 +72,7 @@ export class CustomError {
   static throwError(err: any) {
     return {
       success: false,
-      statusC: err.status || httpStatus.INTERNAL_SERVER_ERROR,
+      status: err.status || httpStatus.INTERNAL_SERVER_ERROR,
       message: err.message,
       errors: err.errors || [],
       hints:

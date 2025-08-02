@@ -9,7 +9,7 @@ export const rideRoutes = Router();
 
 rideRoutes.post(
   "/request",
-  checkAuth(UserRole.RIDER, UserRole.ADMIN),
+  checkAuth(UserRole.RIDER),
   validateRequest(rideValidationSchema),
   RideController.createRide
 );

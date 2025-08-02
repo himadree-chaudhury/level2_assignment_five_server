@@ -22,11 +22,11 @@ statRoutes.get(
 );
 statRoutes.get(
   "/rider-stats/:riderId",
-  checkAuth(UserRole.RIDER, UserRole.ADMIN),
+  checkAuth(UserRole.RIDER),
   StatController.getRiderStats
 );
 statRoutes.get(
   "/driver-stats/:driverId",
-  checkAuth(UserRole.DRIVER, UserRole.ADMIN),
+  checkAuth(UserRole.DRIVER),
   StatController.getDriverStats
 );
