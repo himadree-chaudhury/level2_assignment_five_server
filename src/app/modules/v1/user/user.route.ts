@@ -18,7 +18,7 @@ userRoutes.post(
 );
 userRoutes.get("/", checkAuth(UserRole.ADMIN), userController.getAllUsers);
 userRoutes.get(
-  "/me/:userId",
+  "/me",
   checkAuth(...Object.values(UserRole)),
   userController.getUserById
 );

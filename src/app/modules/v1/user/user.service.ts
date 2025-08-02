@@ -49,7 +49,7 @@ const getAllUsers = async () => {
   return users;
 };
 
-const getUserById = async (tokenUserId: string, userId: string) => {
+const getUserById = async (userId: string) => {
   const user = await User.findById(userId)
     .select("-password -auths -_id")
     .lean();
@@ -58,14 +58,6 @@ const getUserById = async (tokenUserId: string, userId: string) => {
       message: "User not found",
       errors: ["The user with the provided ID does not exist."],
       hints: "Please check the user ID and try again.",
-    });
-    throw error;
-  }
-  if (userId.toString() !== tokenUserId) {
-    const error = CustomError.forbidden({
-      message: "Access denied",
-      errors: ["You do not have permission to access this user."],
-      hints: "Please check your permissions and try again.",
     });
     throw error;
   }

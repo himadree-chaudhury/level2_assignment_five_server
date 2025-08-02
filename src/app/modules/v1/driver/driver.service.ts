@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { CustomError } from "../../../utils/error";
 import { UserRole } from "../user/user.interface";
 import { User } from "../user/user.model";
@@ -54,22 +55,23 @@ const registerDriver = async (payload: Partial<IDriver>) => {
   return driver;
 };
 
-const getDriverById = async (userId: string, driverId: string) => {
-  const driver = await Driver.findById(driverId);
+const getDriverById = async (userId: string) => {
+  const user = await User.findById(userId).select("-password").lean();
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+  const driver = await Driver.findOne({ userId: user._id });
 
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",
       errors: ["The driver with the provided ID does not exist."],
       hints: "Please check the driver ID and try again.",
-    });
-    throw error;
-  }
-  if (driver.userId.toString() !== userId) {
-    const error = CustomError.forbidden({
-      message: "Forbidden",
-      errors: ["You do not have permission to access this driver."],
-      hints: "Please check your permissions and try again.",
     });
     throw error;
   }
@@ -132,7 +134,7 @@ const toggleSuspendDriver = async (driverId: string) => {
 };
 
 const toggleAvailability = async (driverId: string) => {
-  const driver = await Driver.findById(driverId);
+  const driver = await Driver.findOne({ userId: new mongoose.Types.ObjectId(driverId) });
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",
@@ -149,7 +151,7 @@ const toggleAvailability = async (driverId: string) => {
 };
 
 const updateLocation = async (driverId: string, location: IUpdateLocation) => {
-  const driver = await Driver.findById(driverId);
+  const driver = await Driver.findOne({ userId: new mongoose.Types.ObjectId(driverId) });
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",

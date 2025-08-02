@@ -13,7 +13,7 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: "GET,HEAD,PUT,PATCH,POST",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
   })

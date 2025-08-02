@@ -17,7 +17,7 @@ driverRoutes.post(
   DriverController.registerDriver
 );
 driverRoutes.get(
-  "/me/:driverId",
+  "/me",
   checkAuth(UserRole.DRIVER),
   DriverController.getDriverById
 );
@@ -38,12 +38,12 @@ driverRoutes.patch(
 );
 
 driverRoutes.patch(
-  "/availability/:driverId",
+  "/availability",
   checkAuth(UserRole.DRIVER),
   DriverController.toggleAvailability
 );
 driverRoutes.patch(
-  "/update-location/:driverId",
+  "/update-location",
   checkAuth(UserRole.DRIVER),
   validateRequest(updateLocationValidationSchema),
   DriverController.updateLocation
