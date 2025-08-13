@@ -1,0 +1,67 @@
+
+
+# Commit Message Template
+#
+# Format:
+# <type>([scope]): <short summary>
+#   │      │            │
+#   │      │            └─⫸ Summary in present tense. Not capitalized. No period at the end.
+#   │      └─⫸ Optional: module, component, or file affected
+#   └─⫸ Type: see list below
+#
+# [optional body]
+#
+# [optional footer(s)]
+#
+# --------------------
+# Allowed <type> values:
+#
+# feat:      A new feature
+# fix:       A bug fix
+# docs:      Documentation only changes
+# style:     Code style changes (formatting, missing semi colons, etc.), no logic changes
+# refactor:  Code change that neither fixes a bug nor adds a feature
+# perf:      Code change that improves performance
+# test:      Adding missing tests or correcting existing tests
+# chore:     Changes to build process or auxiliary tools/libraries
+# ci:        Changes to CI/CD configuration or scripts
+# build:     Changes that affect the build system or external dependencies
+# revert:    Reverts a previous commit
+#
+# --------------------
+# Examples:
+#
+# feat(auth): add JWT authentication middleware
+# fix(api): handle null pointer on user service
+# docs(readme): update installation section
+# style(app): format code with prettier
+# refactor(db): optimize query structure
+# perf(cache): improve cache retrieval time
+# test(api): add integration tests for login endpoint
+# chore(deps): update lodash to v4.17.21
+# ci(github-actions): add lint step to workflow
+# build(docker): add multi-stage docker build
+# revert(auth): rollback JWT middleware changes
+#
+# --------------------
+# Optional longer explanation (wrap at 72 chars)
+#
+# - What changed?
+# - Why it matters?
+# - Any side effects or related issues?
+#
+# Tips:
+# - Use imperative mood (“add” not “added” or “adds”)
+# - Keep summary under 50 chars, body wrapped at 72 chars
+# - Leave a blank line between subject and body
+# - Body should explain *what* and *why*, not *how*
+#
+#
+# --------------------
+# Optional short footer
+#
+# - Resolves: #123, #456 (tip: issue numbers)
+# - Development-method: e.g. Agile, Scrum, Kanban, Pair Programming, Waterfall
+# - With: [Collaborator's Name]
+#
+# BREAKING CHANGE: use this label if API/interface is broken
