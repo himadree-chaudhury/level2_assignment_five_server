@@ -18,8 +18,8 @@ Please follow these guidelines to ensure a smooth collaboration process. This pr
 1. Fork the repository on GitHub.
 2. Clone your forked repository:
    ```
-   git clone https://github.com/YOUR_USERNAME/level2_assignment_five_server.git
-   cd level2_assignment_five_server
+   git clone https://github.com/YOUR_USERNAME/ride-booking-api.git
+   cd ride-booking-api
    ```
 3. Install dependencies:
    ```
@@ -36,7 +36,7 @@ Please follow these guidelines to ensure a smooth collaboration process. This pr
 ## How to Contribute
 
 ### Reporting Issues
-- Check if the issue already exists in the [Issues](https://github.com/himadree-chaudhury/level2_assignment_five_server/issues) tab.
+- Check if the issue already exists in the [Issues](https://github.com/himadree-chaudhury/ride-booking-api/issues) tab.
 - If not, create a new issue with a clear title, description, steps to reproduce (for bugs), and any relevant screenshots or logs.
 - Use labels like `bug`, `enhancement`, `documentation`, or `help wanted` to categorize.
 
