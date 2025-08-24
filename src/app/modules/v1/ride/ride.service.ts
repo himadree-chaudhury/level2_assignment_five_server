@@ -5,6 +5,7 @@ import {
   haversineDistance,
 } from "../../../utils/rideUtils";
 import { Driver } from "../driver/driver.model";
+import { UserRole } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { IRide, RideStatus } from "./ride.interface";
 import { Ride } from "./ride.model";
@@ -263,6 +264,42 @@ const getRideByHistory = async (userId: string, rideId: string) => {
 
   return ride;
 };
+const getAllRides = async (userId: string) => {
+  console.log(userId);
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  if (user?.role === UserRole.RIDER) {
+    const rides = await Ride.find({ riderId: userId });
+    if (!rides) {
+      const error = CustomError.notFound({
+        message: "Ride not found",
+        errors: ["The ride with the provided ID does not exist."],
+        hints: "Please check the ride ID and try again.",
+      });
+      throw error;
+    }
+    return rides;
+  } else if (user?.role === UserRole.DRIVER) {
+    const rides = await Ride.find({ driverId: userId });
+    if (!rides) {
+      const error = CustomError.notFound({
+        message: "Ride not found",
+        errors: ["The ride with the provided ID does not exist."],
+        hints: "Please check the ride ID and try again.",
+      });
+      throw error;
+    }
+    return rides;
+  }
+};
 
 export const RideService = {
   createRide,
@@ -271,4 +308,5 @@ export const RideService = {
   pickupRide,
   completeRide,
   getRideByHistory,
+  getAllRides,
 };

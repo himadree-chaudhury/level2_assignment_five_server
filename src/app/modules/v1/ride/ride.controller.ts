@@ -83,6 +83,17 @@ const getRideByHistory = asyncTryCatch(async (req: Request, res: Response) => {
     data: ride,
   });
 });
+const getAllRides = asyncTryCatch(async (req: Request, res: Response) => {
+  const userId = req.authUser?.userId;
+  console.log(userId);
+  const rides = await RideService.getAllRides(userId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Rides retrieved successfully",
+    data: rides,
+  });
+});
 
 export const RideController = {
   createRide,
@@ -91,4 +102,5 @@ export const RideController = {
   pickupRide,
   completeRide,
   getRideByHistory,
+  getAllRides,
 };

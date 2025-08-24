@@ -34,6 +34,11 @@ rideRoutes.patch(
   RideController.completeRide
 );
 rideRoutes.get(
+  "/all",
+  checkAuth(UserRole.RIDER, UserRole.DRIVER, UserRole.ADMIN),
+  RideController.getAllRides
+);
+rideRoutes.get(
   "/:rideId",
   checkAuth(UserRole.RIDER, UserRole.DRIVER),
   RideController.getRideByHistory

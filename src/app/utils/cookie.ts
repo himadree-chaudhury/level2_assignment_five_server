@@ -2,8 +2,8 @@ import { CookieOptions, Response } from "express";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
+  secure: true,
+  sameSite: "none",
 };
 
 export const setCookie = (

@@ -8,17 +8,20 @@ import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { traceIdMiddleware } from "./app/middlewares/traceIdHandler";
 import { router } from "./app/routes";
 const app = express();
+app.use(express.json());
 
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://ride-booking-frontend-cabsy.vercel.app",
+    ],
     methods: "GET,HEAD,PUT,PATCH,POST",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
   })
 );
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // app.use(

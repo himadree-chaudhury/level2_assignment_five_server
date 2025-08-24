@@ -7,7 +7,6 @@
 ![Static Badge](https://img.shields.io/badge/v9.0.2-package?style=flat&logo=jsonwebtokens&logoColor=%23F80046&logoSize=auto&label=Json%20Web%20Token&labelColor=black&color=white)
 ![Static Badge](https://img.shields.io/badge/v9.0.2-package?style=flat&logo=redis&logoColor=red&logoSize=auto&label=Redis&labelColor=%23091a23&color=%23dcff1e)
 
-
 ## Overview
 
 The **Ride Booking API** is a secure, scalable, and role-based RESTful API built for a ride-sharing platform using **Express.js** and **Mongoose**. It facilitates seamless management of users, drivers, rides, authentication, and statistical insights. The API supports essential functionalities such as user registration, driver onboarding, ride requests, and detailed analytics, forming the backbone of a robust ride-sharing application. It uses **JSON** for data exchange, leverages standard HTTP methods (GET, POST, PATCH), and is organized into modular routes for clarity and maintainability.
@@ -15,7 +14,6 @@ The **Ride Booking API** is a secure, scalable, and role-based RESTful API built
 This project is developed with a focus on security (using JWT and bcrypt), scalability (with MongoDB and Redis), and type safety (via TypeScript and Zod). Future enhancements include social login, email notifications, real-time ride tracking, payment integration, and multi-language support to enhance user experience and accessibility.
 
 [![Live Link](https://img.shields.io/badge/Live%20Link-link?style=for-the-badge&logo=vercel&logoColor=white&logoSize=auto&label=vercel&labelColor=black&color=white)](https://ride-booking-backend-himadree.vercel.app/)
-
 
 ## Features
 
@@ -94,7 +92,7 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `GET /stat/rider-stats`: Get personal rider statistics.
 - `GET /stat/driver-stats`: Get personal driver statistics.
 
-## Setup & Environment Instructions 
+## Setup & Environment Instructions
 
 ### Prerequisites
 
@@ -108,8 +106,8 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/himadree-chaudhury/level2_assignment_five_server.git
-   cd level2_assignment_five_server
+   git clone https://github.com/himadree-chaudhury/ride-booking-api.git
+   cd ride-booking-api
    ```
 
 2. **Install Dependencies**:
@@ -190,13 +188,20 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 
 Contributions are welcome! Please follow these steps:
 
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/your-feature`).
-3. Commit changes (`git commit -m 'Add your feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
+1. Create a issue for your feature or bug.
+2. Fork the repository.
+3. Create a feature branch (`git checkout -b feature/your-feature`).
+4. Commit changes (`git commit -m 'Add your feature'`).
+5. Push to the branch (`git push origin feature/your-feature`).
+6. Open a pull request.
+
+## Read Followings For Better Understanding
+
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [License](LICENSE.md)
 
 ## Author
 
 ![Static Badge](https://img.shields.io/badge/Himadree%20Chaudhury-author?style=social&label=%F0%9F%A7%91%E2%80%8D%F0%9F%92%BB&color=black)
-

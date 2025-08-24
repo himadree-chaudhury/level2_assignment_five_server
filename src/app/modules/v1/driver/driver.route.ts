@@ -18,7 +18,7 @@ driverRoutes.post(
 );
 driverRoutes.get(
   "/me",
-  checkAuth(UserRole.DRIVER),
+  checkAuth(UserRole.DRIVER, UserRole.RIDER),
   DriverController.getDriverById
 );
 driverRoutes.get(

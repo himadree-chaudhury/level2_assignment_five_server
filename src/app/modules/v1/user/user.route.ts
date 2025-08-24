@@ -29,7 +29,7 @@ userRoutes.patch(
   userController.updateUser
 );
 
-userRoutes.get(
+userRoutes.post(
   "/verify-request",
   checkAuth(...Object.values(UserRole)),
   userController.verifyRequestUser

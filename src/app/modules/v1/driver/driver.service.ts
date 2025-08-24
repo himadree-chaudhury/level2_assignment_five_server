@@ -46,11 +46,6 @@ const registerDriver = async (payload: Partial<IDriver>) => {
     throw error;
   }
   const driver = await Driver.create(payload);
-  await User.findByIdAndUpdate(
-    payload.userId,
-    { role: UserRole.DRIVER },
-    { new: true }
-  );
 
   return driver;
 };
@@ -134,7 +129,9 @@ const toggleSuspendDriver = async (driverId: string) => {
 };
 
 const toggleAvailability = async (driverId: string) => {
-  const driver = await Driver.findOne({ userId: new mongoose.Types.ObjectId(driverId) });
+  const driver = await Driver.findOne({
+    userId: new mongoose.Types.ObjectId(driverId),
+  });
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",
@@ -151,7 +148,9 @@ const toggleAvailability = async (driverId: string) => {
 };
 
 const updateLocation = async (driverId: string, location: IUpdateLocation) => {
-  const driver = await Driver.findOne({ userId: new mongoose.Types.ObjectId(driverId) });
+  const driver = await Driver.findOne({
+    userId: new mongoose.Types.ObjectId(driverId),
+  });
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",

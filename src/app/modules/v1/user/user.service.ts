@@ -3,6 +3,7 @@ import crypto from "crypto";
 import envVariables from "../../../config/env";
 import { redisClient } from "../../../config/redis";
 import { CustomError } from "../../../utils/error";
+import { sendMail } from "../../../utils/sendMail";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -130,6 +131,15 @@ const verifyRequestUser = async (userId: string) => {
       value: 2 * 60, // 2 minutes
     },
   });
+
+  const emailBody = {
+    to: `${user?.email}`,
+    subject: "Verify your email",
+    text: `Your verification code is ${verificationCode}. It will expire in 2 minutes.`,
+    html: `<p>Your verification code is <strong>${verificationCode}</strong>. It will expire in 2 minutes.</p>`,
+  };
+
+  await sendMail(emailBody);
 
   return {
     email: user.email,
