@@ -58,6 +58,19 @@ const pickupRide = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const transitRide = asyncTryCatch(async (req: Request, res: Response) => {
+  const driverId = req.authUser?.userId;
+  const rideId = req.params.rideId;
+
+  const ride = await RideService.transitRide(driverId, rideId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Ride is now in transit",
+    data: ride,
+  });
+});
+
 const completeRide = asyncTryCatch(async (req: Request, res: Response) => {
   const driverId = req.authUser?.userId;
   const rideId = req.params.rideId;
@@ -85,7 +98,6 @@ const getRideByHistory = asyncTryCatch(async (req: Request, res: Response) => {
 });
 const getAllRides = asyncTryCatch(async (req: Request, res: Response) => {
   const userId = req.authUser?.userId;
-  console.log(userId);
   const rides = await RideService.getAllRides(userId);
   genericResponse(res, {
     success: true,
@@ -100,6 +112,7 @@ export const RideController = {
   acceptRide,
   cancelRide,
   pickupRide,
+  transitRide,
   completeRide,
   getRideByHistory,
   getAllRides,

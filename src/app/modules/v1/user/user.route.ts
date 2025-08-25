@@ -4,6 +4,7 @@ import { validateRequest } from "../../../middlewares/validateRequest";
 import { userController } from "./user.controller";
 import { UserRole } from "./user.interface";
 import {
+  userSosContactValidationSchema,
   userUpdateValidationSchema,
   userValidationSchema,
   userVerificationValidationSchema,
@@ -29,6 +30,22 @@ userRoutes.patch(
   userController.updateUser
 );
 
+userRoutes.patch(
+  "/add-sos-contact",
+  checkAuth(...Object.values(UserRole)),
+  validateRequest(userSosContactValidationSchema),
+  userController.addSosContact
+);
+userRoutes.patch(
+  "/update-sos-contact/:contactId",
+  checkAuth(...Object.values(UserRole)),
+  userController.updateSosContact
+);
+userRoutes.patch(
+  "/delete-sos-contact/:contactId",
+  checkAuth(...Object.values(UserRole)),
+  userController.deleteSosContact
+);
 userRoutes.post(
   "/verify-request",
   checkAuth(...Object.values(UserRole)),

@@ -4,9 +4,16 @@ export enum UserRole {
   DRIVER = "DRIVER",
 }
 
-interface IAuth {
+export interface IAuth {
   provider: string;
   providerId: string;
+}
+
+export interface IContact {
+  _id?: string;
+  name: string;
+  phone: string;
+  isPrimary: boolean;
 }
 export interface IUser {
   _id?: string;
@@ -20,4 +27,5 @@ export interface IUser {
   isVerified?: boolean;
   isDeleted?: boolean;
   auths?: IAuth[];
+  sosContacts?: IContact[];
 }

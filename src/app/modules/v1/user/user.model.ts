@@ -1,13 +1,25 @@
 import mongoose, { Schema } from "mongoose";
-import { IUser, UserRole } from "./user.interface";
+import { IAuth, IContact, IUser, UserRole } from "./user.interface";
 
-const authSchema = new Schema(
+const authSchema = new Schema<IAuth>(
   {
     provider: { type: String, required: true },
     providerId: { type: String, required: true },
   },
   {
     _id: false,
+    versionKey: false,
+    timestamps: false,
+  }
+);
+
+const contactSchema = new Schema<IContact>(
+  {
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    isPrimary: { type: Boolean, default: false },
+  },
+  {
     versionKey: false,
     timestamps: false,
   }
@@ -28,6 +40,7 @@ const userSchema = new Schema<IUser>(
     isVerified: { type: Boolean },
     isDeleted: { type: Boolean },
     auths: [authSchema],
+    sosContacts: [contactSchema],
   },
   {
     timestamps: true,

@@ -4,7 +4,7 @@ import envVariables from "../../../config/env";
 import { redisClient } from "../../../config/redis";
 import { CustomError } from "../../../utils/error";
 import { sendMail } from "../../../utils/sendMail";
-import { IUser } from "./user.interface";
+import { IContact, IUser } from "./user.interface";
 import { User } from "./user.model";
 
 const credentialRegister = async (payload: Partial<IUser>) => {
@@ -100,6 +100,122 @@ const updateUser = async (userId: string, payload: Partial<IUser>) => {
     role: updatedUser.role,
     isBlocked: updatedUser.isBlocked,
     isVerified: updatedUser.isVerified,
+  };
+};
+const addSosContact = async (userId: string, payload: Partial<IContact>) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: {
+        sosContacts: payload,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  return {
+    emergencyContacts: updatedUser.sosContacts,
+  };
+};
+
+const updateSosContact = async (userId: string, contactId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  const sosContacts =
+    user.sosContacts &&
+    user.sosContacts.map((contact) => {
+      if (contact._id && contact._id.toString() === contactId) {
+        return {
+          ...contact,
+          isPrimary: !contact.isPrimary,
+        };
+      }
+      return {
+        ...contact,
+        isPrimary: false,
+      };
+    });
+  if (!sosContacts) {
+    throw CustomError.notFound({
+      message: "Contact not found",
+      errors: ["The contact with the provided ID does not exist."],
+      hints: "Please check the contact ID and try again.",
+    });
+  }
+
+  user.sosContacts = sosContacts;
+  const updatedUser = await user.save();
+
+  if (!updatedUser) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  return {
+    emergencyContacts: updatedUser.sosContacts,
+  };
+};
+const deleteSosContact = async (userId: string, contactId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $pull: { sosContacts: { _id: contactId } },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  return {
+    emergencyContacts: updatedUser.sosContacts,
   };
 };
 
@@ -254,6 +370,9 @@ export const userService = {
   getAllUsers,
   getUserById,
   updateUser,
+  addSosContact,
+  updateSosContact,
+  deleteSosContact,
   verifyRequestUser,
   verifyUser,
   blockUser,

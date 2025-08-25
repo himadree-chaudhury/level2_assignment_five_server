@@ -29,6 +29,11 @@ rideRoutes.patch(
   RideController.pickupRide
 );
 rideRoutes.patch(
+  "/transit/:rideId",
+  checkAuth(UserRole.DRIVER),
+  RideController.transitRide
+);
+rideRoutes.patch(
   "/complete/:rideId",
   checkAuth(UserRole.DRIVER),
   RideController.completeRide

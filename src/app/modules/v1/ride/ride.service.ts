@@ -162,6 +162,7 @@ const cancelRide = async (userId: string, userRole: string, rideId: string) => {
   ride.status = RideStatus.CANCELLED;
   ride.cancelledBy =
     ride.riderId?.toString() === userId ? ride.riderId : ride.driverId;
+  ride.canceller = ride.riderId?.toString() === userId ? "Rider" : "Driver";
   ride.cancelledAt = new Date();
   await ride.save();
 
@@ -196,6 +197,39 @@ const pickupRide = async (driverId: string, rideId: string) => {
   }
   ride.status = RideStatus.PICKED_UP;
   ride.pickedUpAt = new Date();
+  await ride.save();
+
+  return ride;
+};
+
+const transitRide = async (driverId: string, rideId: string) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    const error = CustomError.notFound({
+      message: "Ride not found",
+      errors: ["The ride with the provided ID does not exist."],
+      hints: "Please check the ride ID and try again.",
+    });
+    throw error;
+  }
+  if (ride.status !== RideStatus.PICKED_UP) {
+    const error = CustomError.badRequest({
+      message: "Ride cannot be in transit",
+      errors: ["The ride is not in a transit state."],
+      hints: "Only rides in the PICKED_UP state can be in transit.",
+    });
+    throw error;
+  }
+  if (ride.driverId?.toString() !== driverId) {
+    const error = CustomError.forbidden({
+      message: "You are not authorized to accept this ride",
+      errors: ["The ride does not belong to the driver."],
+      hints: "Please check the ride details and try again.",
+    });
+    throw error;
+  }
+  ride.status = RideStatus.IN_TRANSIT;
+  ride.transitAt = new Date();
   await ride.save();
 
   return ride;
@@ -265,7 +299,6 @@ const getRideByHistory = async (userId: string, rideId: string) => {
   return ride;
 };
 const getAllRides = async (userId: string) => {
-  console.log(userId);
   const user = await User.findById(userId);
   if (!user) {
     const error = CustomError.notFound({
@@ -306,6 +339,7 @@ export const RideService = {
   acceptRide,
   cancelRide,
   pickupRide,
+  transitRide,
   completeRide,
   getRideByHistory,
   getAllRides,

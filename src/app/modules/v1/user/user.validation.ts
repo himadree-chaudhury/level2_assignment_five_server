@@ -13,11 +13,27 @@ export const userValidationSchema = z.object({
 })
 
 export const userUpdateValidationSchema = z.object({
-    name: z.string("Please enter your name").max(100, "Name must be at most 100 characters long").optional(),
-    phone: z.string("Please enter a valid phone number").optional(),
-    picture: z.url("Please enter a valid picture URL").optional().or(z.literal("")),
-})
+  name: z
+    .string("Please enter your name")
+    .max(100, "Name must be at most 100 characters long")
+    .optional(),
+  phone: z
+    .string("Please enter a valid phone number")
+    .min(10, "Phone number must be at least 10 characters long")
+    .max(15, "Phone number must be at most 15 characters long")
+    .optional(),
+  picture: z
+    .url("Please enter a valid picture URL")
+    .optional()
+    .or(z.literal("")),
+});
 
 export const userVerificationValidationSchema = z.object({
     verificationCode: z.string("Please enter the verification code").length(6, "Verification code must be exactly 6 characters long")
+});
+
+
+export const userSosContactValidationSchema = z.object({
+    name: z.string("Please enter a name").min(2, "Name must be at least 2 characters long").max(100, "Name must be at most 100 characters long"),
+    phone: z.string("Please enter a valid phone number").min(10, "Phone number must be at least 10 characters long").max(15, "Phone number must be at most 15 characters long"),
 });

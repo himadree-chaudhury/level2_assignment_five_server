@@ -20,9 +20,11 @@ const rideSchema = new mongoose.Schema<IRide>(
     fare: { type: Number },
     requestedAt: { type: Date },
     cancelledBy: { type: Schema.Types.ObjectId, ref: "User" },
+    canceller: { type: String },
     cancelledAt: { type: Date },
     acceptedAt: { type: Date },
     pickedUpAt: { type: Date },
+    transitAt: { type: Date },
     completedAt: { type: Date },
   },
   {
