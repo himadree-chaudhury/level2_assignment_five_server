@@ -284,19 +284,34 @@ const getRideByHistory = async (userId: string, rideId: string) => {
     });
     throw error;
   }
-  if (ride.riderId?.toString() !== userId) {
-    if (ride.driverId?.toString() !== userId) {
-      const error = CustomError.forbidden({
-        message: "You are not authorized to cancel this ride",
-        errors: ["The ride does not belong to the driver."],
-        hints: "Please check the ride details and try again.",
-      });
-      throw error;
-    }
-    return ride;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
   }
 
-  return ride;
+  if (user.role === UserRole.ADMIN) {
+    return ride;
+  } else {
+    if (ride.riderId?.toString() !== userId) {
+      if (ride.driverId?.toString() !== userId) {
+        const error = CustomError.forbidden({
+          message: "You are not authorized to cancel this ride",
+          errors: ["The ride does not belong to the driver."],
+          hints: "Please check the ride details and try again.",
+        });
+        throw error;
+      }
+      return ride;
+    }
+
+    return ride;
+  }
 };
 const getAllRides = async (userId: string) => {
   const user = await User.findById(userId);
@@ -309,8 +324,8 @@ const getAllRides = async (userId: string) => {
     throw error;
   }
 
-  if (user?.role === UserRole.RIDER) {
-    const rides = await Ride.find({ riderId: userId });
+  if (user?.role === UserRole.ADMIN) {
+    const rides = await Ride.find();
     if (!rides) {
       const error = CustomError.notFound({
         message: "Ride not found",
@@ -320,17 +335,30 @@ const getAllRides = async (userId: string) => {
       throw error;
     }
     return rides;
-  } else if (user?.role === UserRole.DRIVER) {
-    const rides = await Ride.find({ driverId: userId });
-    if (!rides) {
-      const error = CustomError.notFound({
-        message: "Ride not found",
-        errors: ["The ride with the provided ID does not exist."],
-        hints: "Please check the ride ID and try again.",
-      });
-      throw error;
+  } else {
+    if (user?.role === UserRole.RIDER) {
+      const rides = await Ride.find({ riderId: userId });
+      if (!rides) {
+        const error = CustomError.notFound({
+          message: "Ride not found",
+          errors: ["The ride with the provided ID does not exist."],
+          hints: "Please check the ride ID and try again.",
+        });
+        throw error;
+      }
+      return rides;
+    } else if (user?.role === UserRole.DRIVER) {
+      const rides = await Ride.find({ driverId: userId });
+      if (!rides) {
+        const error = CustomError.notFound({
+          message: "Ride not found",
+          errors: ["The ride with the provided ID does not exist."],
+          hints: "Please check the ride ID and try again.",
+        });
+        throw error;
+      }
+      return rides;
     }
-    return rides;
   }
 };
 

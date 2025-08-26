@@ -36,9 +36,9 @@ const getAllDrivers = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
-const approveDriver = asyncTryCatch(async (req: Request, res: Response) => {
+const toggleApproveDriver = asyncTryCatch(async (req: Request, res: Response) => {
   const driverId = req.params.driverId;
-  const driver = await DriverService.approveDriver(driverId);
+  const driver = await DriverService.toggleApproveDriver(driverId);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
@@ -89,7 +89,7 @@ export const DriverController = {
   registerDriver,
   getDriverById,
   getAllDrivers,
-  approveDriver,
+  toggleApproveDriver,
   toggleSuspendDriver,
   toggleAvailability,
   updateLocation,

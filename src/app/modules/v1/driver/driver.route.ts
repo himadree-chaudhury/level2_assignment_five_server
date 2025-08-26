@@ -29,7 +29,7 @@ driverRoutes.get(
 driverRoutes.patch(
   "/approve/:driverId",
   checkAuth(UserRole.ADMIN),
-  DriverController.approveDriver
+  DriverController.toggleApproveDriver
 );
 driverRoutes.patch(
   "/suspend/:driverId",

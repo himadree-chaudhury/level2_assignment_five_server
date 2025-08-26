@@ -36,7 +36,9 @@ const registerDriver = async (payload: Partial<IDriver>) => {
     throw error;
   }
 
-  const existingDriver = await Driver.findOne({ userId: payload.userId });
+  const existingDriver = await Driver.findOne({
+    userId: payload.userId,
+  });
   if (existingDriver) {
     const error = CustomError.conflict({
       message: "Driver already registered",
@@ -78,12 +80,8 @@ const getAllDrivers = async () => {
   return drivers;
 };
 
-const approveDriver = async (driverId: string) => {
-  const driver = await Driver.findByIdAndUpdate(
-    driverId,
-    { isApproved: true },
-    { new: true }
-  );
+const toggleApproveDriver = async (driverId: string) => {
+  const driver = await Driver.findOne({ _id: driverId });
 
   if (!driver) {
     const error = CustomError.notFound({
@@ -94,19 +92,15 @@ const approveDriver = async (driverId: string) => {
     throw error;
   }
 
-  const user = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     driver.userId,
     { role: UserRole.DRIVER },
     { new: true }
   );
-  if (!user) {
-    const error = CustomError.notFound({
-      message: "User not found",
-      errors: ["The user associated with the driver does not exist."],
-      hints: "Please check the user ID and try again.",
-    });
-    throw error;
-  }
+
+  driver.isApproved = !driver.isApproved;
+  await driver.save();
+
   return driver;
 };
 
@@ -122,8 +116,14 @@ const toggleSuspendDriver = async (driverId: string) => {
     throw error;
   }
 
-  driver.isSuspended = !driver.isSuspended;
-  await driver.save();
+  if (!driver.isSuspended) {
+    driver.isSuspended = true;
+    driver.isAvailable = false;
+    await driver.save();
+  } else {
+    driver.isSuspended = false;
+    await driver.save();
+  }
 
   return driver;
 };
@@ -169,7 +169,7 @@ export const DriverService = {
   registerDriver,
   getDriverById,
   getAllDrivers,
-  approveDriver,
+  toggleApproveDriver,
   toggleSuspendDriver,
   toggleAvailability,
   updateLocation,

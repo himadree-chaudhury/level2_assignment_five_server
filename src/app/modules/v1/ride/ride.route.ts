@@ -45,6 +45,6 @@ rideRoutes.get(
 );
 rideRoutes.get(
   "/:rideId",
-  checkAuth(UserRole.RIDER, UserRole.DRIVER),
+  checkAuth(UserRole.RIDER, UserRole.DRIVER, UserRole.ADMIN),
   RideController.getRideByHistory
 );
