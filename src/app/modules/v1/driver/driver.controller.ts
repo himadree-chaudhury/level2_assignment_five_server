@@ -76,15 +76,14 @@ const toggleAvailability = asyncTryCatch(
     });
   }
 );
-const updateLocation = asyncTryCatch(async (req: Request, res: Response) => {
+const updateDriver = asyncTryCatch(async (req: Request, res: Response) => {
   const driverId = req.authUser?.userId;
-  const location = req.body;
-  const driver = await DriverService.updateLocation(driverId, location);
+  const updatedDriver = await DriverService.updateDriver(driverId, req.body);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
-    message: "Driver location updated successfully",
-    data: driver,
+    message: "Driver updated successfully",
+    data: updatedDriver,
   });
 });
 
@@ -95,5 +94,5 @@ export const DriverController = {
   toggleApproveDriver,
   toggleSuspendDriver,
   toggleAvailability,
-  updateLocation,
+  updateDriver,
 };

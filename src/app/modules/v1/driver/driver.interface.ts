@@ -23,9 +23,20 @@ export interface IDriver {
     isSuspended?: boolean;
 }
 
-export interface IUpdateLocation {
-    currentLocation: {
-        latitude: number;
-        longitude: number;
-    };
+export interface IUpdateDriver {
+  vehicleInfo?: {
+    model?: string;
+    registrationNumber?: string;
+    year?: number;
+    maxPassengers?: number;
+  };
+  driverLicense?: {
+    number?: string;
+    expirationDate?: Date;
+  };
+  isAvailable?: boolean;
+  currentLocation?: {
+    latitude?: number;
+    longitude?: number;
+  };
 }

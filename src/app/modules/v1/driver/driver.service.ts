@@ -4,7 +4,7 @@ import { CustomError } from "../../../utils/error";
 import { QueryBuilder } from "../../../utils/queryBuilder";
 import { UserRole } from "../user/user.interface";
 import { User } from "../user/user.model";
-import { IDriver, IUpdateLocation } from "./driver.interface";
+import { IDriver, IUpdateDriver } from "./driver.interface";
 import { Driver } from "./driver.model";
 
 const registerDriver = async (payload: Partial<IDriver>) => {
@@ -162,7 +162,7 @@ const toggleAvailability = async (driverId: string) => {
   return driver.isAvailable;
 };
 
-const updateLocation = async (driverId: string, location: IUpdateLocation) => {
+const updateDriver = async (driverId: string, payload: IUpdateDriver) => {
   const driver = await Driver.findOne({
     userId: new mongoose.Types.ObjectId(driverId),
   });
@@ -174,10 +174,22 @@ const updateLocation = async (driverId: string, location: IUpdateLocation) => {
     });
     throw error;
   }
-  driver.currentLocation = location.currentLocation;
-  await driver.save();
+   const updatedDriver = await Driver.findByIdAndUpdate(
+     { _id: driver._id },
+     { $set: payload },
+     { new: true }
+  );
+  
+   if (!updatedDriver) {
+     const error = CustomError.notFound({
+       message: "User not found",
+       errors: ["The user with the provided ID does not exist."],
+       hints: "Please check the user ID and try again.",
+     });
+     throw error;
+  }
 
-  return driver.currentLocation;
+  return updatedDriver;
 };
 
 export const DriverService = {
@@ -187,5 +199,5 @@ export const DriverService = {
   toggleApproveDriver,
   toggleSuspendDriver,
   toggleAvailability,
-  updateLocation,
+  updateDriver,
 };

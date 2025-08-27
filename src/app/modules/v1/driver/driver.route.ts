@@ -5,7 +5,7 @@ import { UserRole } from "../user/user.interface";
 import { DriverController } from "./driver.controller";
 import {
   driverValidationSchema,
-  updateLocationValidationSchema,
+  updateDriverValidationSchema,
 } from "./driver.validation";
 
 export const driverRoutes = Router();
@@ -43,8 +43,8 @@ driverRoutes.patch(
   DriverController.toggleAvailability
 );
 driverRoutes.patch(
-  "/update-location",
+  "/update",
   checkAuth(UserRole.DRIVER),
-  validateRequest(updateLocationValidationSchema),
-  DriverController.updateLocation
+  validateRequest(updateDriverValidationSchema),
+  DriverController.updateDriver
 );
