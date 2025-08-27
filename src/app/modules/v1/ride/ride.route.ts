@@ -29,12 +29,22 @@ rideRoutes.patch(
   RideController.pickupRide
 );
 rideRoutes.patch(
+  "/transit/:rideId",
+  checkAuth(UserRole.DRIVER),
+  RideController.transitRide
+);
+rideRoutes.patch(
   "/complete/:rideId",
   checkAuth(UserRole.DRIVER),
   RideController.completeRide
 );
 rideRoutes.get(
+  "/all",
+  checkAuth(UserRole.RIDER, UserRole.DRIVER, UserRole.ADMIN),
+  RideController.getAllRides
+);
+rideRoutes.get(
   "/:rideId",
-  checkAuth(UserRole.RIDER, UserRole.DRIVER),
+  checkAuth(UserRole.RIDER, UserRole.DRIVER, UserRole.ADMIN),
   RideController.getRideByHistory
 );

@@ -1,10 +1,13 @@
+import { Request } from "express";
 import { CustomError } from "../../../utils/error";
+import { QueryBuilder } from "../../../utils/queryBuilder";
 import {
   calculateFare,
   findNearestDriver,
   haversineDistance,
 } from "../../../utils/rideUtils";
 import { Driver } from "../driver/driver.model";
+import { UserRole } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { IRide, RideStatus } from "./ride.interface";
 import { Ride } from "./ride.model";
@@ -149,18 +152,19 @@ const cancelRide = async (userId: string, userRole: string, rideId: string) => {
       });
       throw error;
     } else {
-      const error = CustomError.forbidden({
-        message: "You are not authorized to cancel this ride",
-        errors: ["The ride does not belong to the user."],
-        hints: "Please check the ride details and try again.",
-      });
-      throw error;
+      ride.status = RideStatus.CANCELLED;
+      ride.cancelledBy = ride.driverId;
+      ride.canceller = "Driver";
+      ride.cancelledAt = new Date();
+      await ride.save();
+
+      return ride;
     }
   }
 
   ride.status = RideStatus.CANCELLED;
-  ride.cancelledBy =
-    ride.riderId?.toString() === userId ? ride.riderId : ride.driverId;
+  ride.cancelledBy = ride.riderId;
+  ride.canceller = "Rider";
   ride.cancelledAt = new Date();
   await ride.save();
 
@@ -200,7 +204,7 @@ const pickupRide = async (driverId: string, rideId: string) => {
   return ride;
 };
 
-const completeRide = async (driverId: string, rideId: string) => {
+const transitRide = async (driverId: string, rideId: string) => {
   const ride = await Ride.findById(rideId);
   if (!ride) {
     const error = CustomError.notFound({
@@ -212,9 +216,42 @@ const completeRide = async (driverId: string, rideId: string) => {
   }
   if (ride.status !== RideStatus.PICKED_UP) {
     const error = CustomError.badRequest({
+      message: "Ride cannot be in transit",
+      errors: ["The ride is not in a transit state."],
+      hints: "Only rides in the PICKED_UP state can be in transit.",
+    });
+    throw error;
+  }
+  if (ride.driverId?.toString() !== driverId) {
+    const error = CustomError.forbidden({
+      message: "You are not authorized to accept this ride",
+      errors: ["The ride does not belong to the driver."],
+      hints: "Please check the ride details and try again.",
+    });
+    throw error;
+  }
+  ride.status = RideStatus.IN_TRANSIT;
+  ride.transitAt = new Date();
+  await ride.save();
+
+  return ride;
+};
+
+const completeRide = async (driverId: string, rideId: string) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    const error = CustomError.notFound({
+      message: "Ride not found",
+      errors: ["The ride with the provided ID does not exist."],
+      hints: "Please check the ride ID and try again.",
+    });
+    throw error;
+  }
+  if (ride.status !== RideStatus.IN_TRANSIT) {
+    const error = CustomError.badRequest({
       message: "Ride cannot be completed",
       errors: ["The ride is not in a completable state."],
-      hints: "Only rides in the PICKED_UP state can be completed.",
+      hints: "Only rides in the IN_TRANSIT state can be completed.",
     });
     throw error;
   }
@@ -249,19 +286,115 @@ const getRideByHistory = async (userId: string, rideId: string) => {
     });
     throw error;
   }
-  if (ride.riderId?.toString() !== userId) {
-    if (ride.driverId?.toString() !== userId) {
-      const error = CustomError.forbidden({
-        message: "You are not authorized to cancel this ride",
-        errors: ["The ride does not belong to the driver."],
-        hints: "Please check the ride details and try again.",
+
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  if (user.role === UserRole.ADMIN) {
+    return ride;
+  } else {
+    if (ride.riderId?.toString() !== userId) {
+      if (ride.driverId?.toString() !== userId) {
+        const error = CustomError.forbidden({
+          message: "You are not authorized to cancel this ride",
+          errors: ["The ride does not belong to the driver."],
+          hints: "Please check the ride details and try again.",
+        });
+        throw error;
+      }
+      return ride;
+    }
+
+    return ride;
+  }
+};
+const getAllRides = async (userId: string, req: Request) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  if (user?.role === UserRole.ADMIN) {
+    const rides = new QueryBuilder<IRide>(Ride.find(), req.query)
+      .filter()
+      .sort()
+      .paginate();
+
+    const [rideData, metaData] = await Promise.all([
+      rides.build(),
+      rides.getMetadata(),
+    ]);
+
+    if (!rideData) {
+      const error = CustomError.notFound({
+        message: "Ride not found",
+        errors: ["The ride with the provided ID does not exist."],
+        hints: "Please check the ride ID and try again.",
       });
       throw error;
     }
-    return ride;
-  }
+    return { rideData, metaData };
+  } else {
+    if (user?.role === UserRole.RIDER) {
+      const rides = new QueryBuilder<IRide>(
+        Ride.find({ riderId: userId }),
+        req.query
+      )
+        .filter()
+        .sort()
+        .paginate();
 
-  return ride;
+      const [rideData, metaData] = await Promise.all([
+        rides.build(),
+        rides.getMetadata(),
+      ]);
+
+      if (!rideData) {
+        const error = CustomError.notFound({
+          message: "Ride not found",
+          errors: ["The ride with the provided ID does not exist."],
+          hints: "Please check the ride ID and try again.",
+        });
+        throw error;
+      }
+      return { rideData, metaData };
+    } else if (user?.role === UserRole.DRIVER) {
+      const rides = new QueryBuilder<IRide>(
+        Ride.find({ driverId: userId }),
+        req.query
+      )
+        .filter()
+        .sort()
+        .paginate();
+
+      const [rideData, metaData] = await Promise.all([
+        rides.build(),
+        rides.getMetadata(),
+      ]);
+
+      if (!rideData) {
+        const error = CustomError.notFound({
+          message: "Ride not found",
+          errors: ["The ride with the provided ID does not exist."],
+          hints: "Please check the ride ID and try again.",
+        });
+        throw error;
+      }
+      return { rideData, metaData };
+    }
+  }
 };
 
 export const RideService = {
@@ -269,6 +402,8 @@ export const RideService = {
   acceptRide,
   cancelRide,
   pickupRide,
+  transitRide,
   completeRide,
   getRideByHistory,
+  getAllRides,
 };

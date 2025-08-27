@@ -31,6 +31,7 @@ export const findNearestDriver = async (pickupLocation: {
   const allAvailableDrivers: IDriver[] = await Driver.find({
     isApproved: true,
     isSuspended: false,
+    isAvailable: true,
   }).populate("userId", "name phone");
 
   let nearestDriver = null;

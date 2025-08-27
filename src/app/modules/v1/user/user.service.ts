@@ -1,9 +1,12 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { Request } from "express";
 import envVariables from "../../../config/env";
 import { redisClient } from "../../../config/redis";
 import { CustomError } from "../../../utils/error";
-import { IUser } from "./user.interface";
+import { QueryBuilder } from "../../../utils/queryBuilder";
+import { sendMail } from "../../../utils/sendMail";
+import { IContact, IUser } from "./user.interface";
 import { User } from "./user.model";
 
 const credentialRegister = async (payload: Partial<IUser>) => {
@@ -44,9 +47,19 @@ const credentialRegister = async (payload: Partial<IUser>) => {
   };
 };
 
-const getAllUsers = async () => {
-  const users = await User.find().select("-password").lean();
-  return users;
+const getAllUsers = async (req: Request) => {
+  const users = new QueryBuilder<IUser>(User.find(), req.query)
+    .filter()
+    .search(["name", "email"])
+    .sort()
+    .fields()
+    .paginate();
+  const [userData, metadata] = await Promise.all([
+    users.build().select("-password").lean(),
+    users.getMetadata(),
+  ]);
+
+  return { userData, metadata };
 };
 
 const getUserById = async (userId: string) => {
@@ -101,6 +114,122 @@ const updateUser = async (userId: string, payload: Partial<IUser>) => {
     isVerified: updatedUser.isVerified,
   };
 };
+const addSosContact = async (userId: string, payload: Partial<IContact>) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: {
+        sosContacts: payload,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  return {
+    emergencyContacts: updatedUser.sosContacts,
+  };
+};
+
+const updateSosContact = async (userId: string, contactId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  const sosContacts =
+    user.sosContacts &&
+    user.sosContacts.map((contact) => {
+      if (contact._id && contact._id.toString() === contactId) {
+        return {
+          ...contact,
+          isPrimary: !contact.isPrimary,
+        };
+      }
+      return {
+        ...contact,
+        isPrimary: false,
+      };
+    });
+  if (!sosContacts) {
+    throw CustomError.notFound({
+      message: "Contact not found",
+      errors: ["The contact with the provided ID does not exist."],
+      hints: "Please check the contact ID and try again.",
+    });
+  }
+
+  user.sosContacts = sosContacts;
+  const updatedUser = await user.save();
+
+  if (!updatedUser) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  return {
+    emergencyContacts: updatedUser.sosContacts,
+  };
+};
+const deleteSosContact = async (userId: string, contactId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $pull: { sosContacts: { _id: contactId } },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    const error = CustomError.notFound({
+      message: "User not found",
+      errors: ["The user with the provided ID does not exist."],
+      hints: "Please check the user ID and try again.",
+    });
+    throw error;
+  }
+
+  return {
+    emergencyContacts: updatedUser.sosContacts,
+  };
+};
 
 const verifyRequestUser = async (userId: string) => {
   const user = await User.findById(userId);
@@ -130,6 +259,15 @@ const verifyRequestUser = async (userId: string) => {
       value: 2 * 60, // 2 minutes
     },
   });
+
+  const emailBody = {
+    to: `${user?.email}`,
+    subject: "Verify your email",
+    text: `Your verification code is ${verificationCode}. It will expire in 2 minutes.`,
+    html: `<p>Your verification code is <strong>${verificationCode}</strong>. It will expire in 2 minutes.</p>`,
+  };
+
+  await sendMail(emailBody);
 
   return {
     email: user.email,
@@ -238,15 +376,33 @@ const deleteUser = async (userId: string) => {
     isDeleted: deletedUser.isDeleted,
   };
 };
+const contact = async (payload: {
+  name: string;
+  email: string;
+  message: string;
+}) => {
+  const emailBody = {
+    to: `himadreebd@gmail.com`,
+    subject: "Contact Us",
+    text: `${payload.name}`,
+    html: `<p>${payload.message}</p>`,
+  };
+
+  await sendMail(emailBody);
+};
 
 export const userService = {
   credentialRegister,
   getAllUsers,
   getUserById,
   updateUser,
+  addSosContact,
+  updateSosContact,
+  deleteSosContact,
   verifyRequestUser,
   verifyUser,
   blockUser,
   unblockUser,
   deleteUser,
+  contact,
 };

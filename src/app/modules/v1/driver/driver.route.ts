@@ -5,7 +5,7 @@ import { UserRole } from "../user/user.interface";
 import { DriverController } from "./driver.controller";
 import {
   driverValidationSchema,
-  updateLocationValidationSchema,
+  updateDriverValidationSchema,
 } from "./driver.validation";
 
 export const driverRoutes = Router();
@@ -18,7 +18,7 @@ driverRoutes.post(
 );
 driverRoutes.get(
   "/me",
-  checkAuth(UserRole.DRIVER),
+  checkAuth(UserRole.DRIVER, UserRole.RIDER),
   DriverController.getDriverById
 );
 driverRoutes.get(
@@ -29,7 +29,7 @@ driverRoutes.get(
 driverRoutes.patch(
   "/approve/:driverId",
   checkAuth(UserRole.ADMIN),
-  DriverController.approveDriver
+  DriverController.toggleApproveDriver
 );
 driverRoutes.patch(
   "/suspend/:driverId",
@@ -43,8 +43,8 @@ driverRoutes.patch(
   DriverController.toggleAvailability
 );
 driverRoutes.patch(
-  "/update-location",
+  "/update",
   checkAuth(UserRole.DRIVER),
-  validateRequest(updateLocationValidationSchema),
-  DriverController.updateLocation
+  validateRequest(updateDriverValidationSchema),
+  DriverController.updateDriver
 );

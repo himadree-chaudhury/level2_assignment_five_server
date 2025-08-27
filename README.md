@@ -7,7 +7,6 @@
 ![Static Badge](https://img.shields.io/badge/v9.0.2-package?style=flat&logo=jsonwebtokens&logoColor=%23F80046&logoSize=auto&label=Json%20Web%20Token&labelColor=black&color=white)
 ![Static Badge](https://img.shields.io/badge/v9.0.2-package?style=flat&logo=redis&logoColor=red&logoSize=auto&label=Redis&labelColor=%23091a23&color=%23dcff1e)
 
-
 ## Overview
 
 The **Ride Booking API** is a secure, scalable, and role-based RESTful API built for a ride-sharing platform using **Express.js** and **Mongoose**. It facilitates seamless management of users, drivers, rides, authentication, and statistical insights. The API supports essential functionalities such as user registration, driver onboarding, ride requests, and detailed analytics, forming the backbone of a robust ride-sharing application. It uses **JSON** for data exchange, leverages standard HTTP methods (GET, POST, PATCH), and is organized into modular routes for clarity and maintainability.
@@ -15,7 +14,6 @@ The **Ride Booking API** is a secure, scalable, and role-based RESTful API built
 This project is developed with a focus on security (using JWT and bcrypt), scalability (with MongoDB and Redis), and type safety (via TypeScript and Zod). Future enhancements include social login, email notifications, real-time ride tracking, payment integration, and multi-language support to enhance user experience and accessibility.
 
 [![Live Link](https://img.shields.io/badge/Live%20Link-link?style=for-the-badge&logo=vercel&logoColor=white&logoSize=auto&label=vercel&labelColor=black&color=white)](https://ride-booking-backend-himadree.vercel.app/)
-
 
 ## Features
 
@@ -46,6 +44,7 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 | **envalid**      | Environment validation        | Ensures environment variables are correctly configured and validated.                       |
 | **eslint**       | Code linting                  | Enforces coding standards and improves code quality.                                        |
 | **ts-node-dev**  | Development server            | Enables fast development with automatic TypeScript compilation and server restarts.         |
+| **nodemailer**   | Email sending                 | Simplifies sending emails from the application, useful for notifications and alerts.        |
 
 ## API Endpoint Summary
 
@@ -57,9 +56,13 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `POST /user/verify`: Verify user with a code.
 - `GET /user`: List all users (admin only).
 - `GET /user/me`: Get authenticated user details.
+- `POST /user/contact`: Contact support.
 - `PATCH /user/block/:userId`: Block a user (admin only).
 - `PATCH /user/unblock/:userId`: Unblock a user (admin only).
 - `PATCH /user/delete/:userId`: Soft delete a user (admin only).
+- `PATCH /user/add-sos-contact`: Add an SOS contact for the user.
+- `PATCH /user/update-sos-contact`: Update an SOS contact for the user.
+- `PATCH /user/remove-sos-contact`: Remove an SOS contact for the user.
 
 ### Auth Routes
 
@@ -73,9 +76,9 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `PATCH /driver/update`: Update driver details (`name`, `phone`, `picture`, `vehicleNumber`).
 - `GET /driver`: List all drivers (admin only).
 - `GET /driver/me`: Get authenticated driver details.
-- `PATCH /driver/block/:driverId`: Block a driver (admin only).
-- `PATCH /driver/unblock/:driverId`: Unblock a driver (admin only).
-- `PATCH /driver/delete/:driverId`: Soft delete a driver (admin only).
+- `PATCH /driver/availability`: Update driver availability status (driver only).
+- `PATCH /driver/suspend/:driverId`: Toggle suspend a driver (admin only).
+- `PATCH /driver/approve/:driverId`: Toggle approve a driver (admin only).
 
 ### Ride Routes
 
@@ -83,8 +86,10 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `PATCH /ride/accept/:rideId`: Accept a ride (driver only).
 - `PATCH /ride/cancel/:rideId`: Cancel a ride (rider or driver).
 - `PATCH /ride/pickup/:rideId`: Mark ride as picked up (driver only).
+- `PATCH /ride/transit/:rideId`: Mark ride as in transit (driver only).
 - `PATCH /ride/complete/:rideId`: Complete a ride (driver only).
 - `GET /ride/:rideId`: Get ride details.
+- `GET /ride/all`: Get all ride details.
 
 ### Stat Routes
 
@@ -94,7 +99,7 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `GET /stat/rider-stats`: Get personal rider statistics.
 - `GET /stat/driver-stats`: Get personal driver statistics.
 
-## Setup & Environment Instructions 
+## Setup & Environment Instructions
 
 ### Prerequisites
 
@@ -108,8 +113,8 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/himadree-chaudhury/level2_assignment_five_server.git
-   cd level2_assignment_five_server
+   git clone https://github.com/himadree-chaudhury/ride-booking-api.git
+   cd ride-booking-api
    ```
 
 2. **Install Dependencies**:
@@ -135,6 +140,10 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
    REDIS_PASSWORD=your_redis_password
    REDIS_HOST=your_redis_host
    REDIS_PORT=11346
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your_email@gmail.com
+   SMTP_PASS=your_email_password
    ```
 
 4. **Run the Application**:
@@ -174,6 +183,10 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - **REDIS_PASSWORD**: Password for Redis.
 - **REDIS_HOST**: Hostname for Redis
 - **REDIS_PORT**: Port number for Redis (default: 11346).
+- **SMTP_HOST**: SMTP server host (e.g., smtp.gmail.com).
+- **SMTP_PORT**: SMTP server port (default: 587).
+- **SMTP_USER**: SMTP username (e.g., your_email@gmail.com).
+- **SMTP_PASS**: SMTP password.
 
 ## Future Enhancements
 
@@ -184,19 +197,25 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - Add **ride rating systems** for users and drivers.
 - Support **multi-language** API responses.
 - Implement **push notifications** and **in-app chat** for better communication.
-- Enhance **analytics** with real-time dashboards.
 
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
 
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/your-feature`).
-3. Commit changes (`git commit -m 'Add your feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
+1. Create a issue for your feature or bug.
+2. Fork the repository.
+3. Create a feature branch (`git checkout -b feature/your-feature`).
+4. Commit changes (`git commit -m 'Add your feature'`).
+5. Push to the branch (`git push origin feature/your-feature`).
+6. Open a pull request.
+
+## Read Followings For Better Understanding
+
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [License](LICENSE.md)
 
 ## Author
 
 ![Static Badge](https://img.shields.io/badge/Himadree%20Chaudhury-author?style=social&label=%F0%9F%A7%91%E2%80%8D%F0%9F%92%BB&color=black)
-

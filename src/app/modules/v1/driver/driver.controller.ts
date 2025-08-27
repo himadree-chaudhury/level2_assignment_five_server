@@ -27,25 +27,28 @@ const getDriverById = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getAllDrivers = asyncTryCatch(async (req: Request, res: Response) => {
-  const drivers = await DriverService.getAllDrivers();
+  const results = await DriverService.getAllDrivers(req);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
     message: "Drivers retrieved successfully",
-    data: drivers,
+    data: results.driverData,
+    meta: results.metaData,
   });
 });
 
-const approveDriver = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.params.driverId;
-  const driver = await DriverService.approveDriver(driverId);
-  genericResponse(res, {
-    success: true,
-    status: httpStatus.OK,
-    message: "Driver approved successfully",
-    data: driver,
-  });
-});
+const toggleApproveDriver = asyncTryCatch(
+  async (req: Request, res: Response) => {
+    const driverId = req.params.driverId;
+    const driver = await DriverService.toggleApproveDriver(driverId);
+    genericResponse(res, {
+      success: true,
+      status: httpStatus.OK,
+      message: "Driver approved successfully",
+      data: driver,
+    });
+  }
+);
 
 const toggleSuspendDriver = asyncTryCatch(
   async (req: Request, res: Response) => {
@@ -73,15 +76,14 @@ const toggleAvailability = asyncTryCatch(
     });
   }
 );
-const updateLocation = asyncTryCatch(async (req: Request, res: Response) => {
+const updateDriver = asyncTryCatch(async (req: Request, res: Response) => {
   const driverId = req.authUser?.userId;
-  const location = req.body;
-  const driver = await DriverService.updateLocation(driverId, location);
+  const updatedDriver = await DriverService.updateDriver(driverId, req.body);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
-    message: "Driver location updated successfully",
-    data: driver,
+    message: "Driver updated successfully",
+    data: updatedDriver,
   });
 });
 
@@ -89,8 +91,8 @@ export const DriverController = {
   registerDriver,
   getDriverById,
   getAllDrivers,
-  approveDriver,
+  toggleApproveDriver,
   toggleSuspendDriver,
   toggleAvailability,
-  updateLocation,
+  updateDriver,
 };

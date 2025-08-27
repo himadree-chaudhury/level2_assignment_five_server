@@ -17,12 +17,13 @@ const credentialRegister = asyncTryCatch(
 );
 
 const getAllUsers = asyncTryCatch(async (req: Request, res: Response) => {
-  const users = await userService.getAllUsers();
+  const results = await userService.getAllUsers(req);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
     message: "Users retrieved successfully",
-    data: users,
+    data: results.userData,
+    meta: results.metadata,
   });
 });
 
@@ -44,6 +45,39 @@ const updateUser = asyncTryCatch(async (req: Request, res: Response) => {
     success: true,
     status: httpStatus.OK,
     message: "User updated successfully",
+    data: updatedUser,
+  });
+});
+const addSosContact = asyncTryCatch(async (req: Request, res: Response) => {
+  const userId = req.authUser?.userId;
+  const updatedUser = await userService.addSosContact(userId, req.body);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "SOS contact added successfully",
+    data: updatedUser,
+  });
+});
+
+const updateSosContact = asyncTryCatch(async (req: Request, res: Response) => {
+  const userId = req.authUser?.userId;
+  const contactId = req.params?.contactId;
+  const updatedUser = await userService.updateSosContact(userId, contactId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "SOS contact updated successfully",
+    data: updatedUser,
+  });
+});
+const deleteSosContact = asyncTryCatch(async (req: Request, res: Response) => {
+  const userId = req.authUser?.userId;
+  const contactId = req.params?.contactId;
+  const updatedUser = await userService.deleteSosContact(userId, contactId);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "SOS contact deleted successfully",
     data: updatedUser,
   });
 });
@@ -103,14 +137,30 @@ const deleteUser = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const contact = asyncTryCatch(async (req: Request, res: Response) => {
+  const contactData = req.body;
+  await userService.contact(contactData);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Message sent successfully",
+  });
+});
+
+
+
 export const userController = {
   credentialRegister,
   getAllUsers,
   getUserById,
   updateUser,
+  addSosContact,
+  updateSosContact,
+  deleteSosContact,
   verifyRequestUser,
   verifyUser,
   blockUser,
   unblockUser,
   deleteUser,
+  contact
 };

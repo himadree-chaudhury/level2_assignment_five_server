@@ -1,5 +1,5 @@
 {
-  "name": "assignment_5",
+  "name": "ride-booking-api",
   "version": "1.0.0",
   "description": "A secure, scalable, and role-based backend API for a ride booking system using Express.js and Mongoose.",
   "main": "index.js",
@@ -36,6 +36,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.0",
     "morgan": "^1.10.1",
+    "nodemailer": "^7.0.5",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
@@ -53,6 +54,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/morgan": "^1.9.10",
+    "@types/nodemailer": "^7.0.1",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-local": "^1.0.38",

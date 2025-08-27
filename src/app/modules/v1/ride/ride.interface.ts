@@ -25,8 +25,10 @@ export interface IRide {
   fare: number;
   requestedAt?: Date;
   cancelledBy?: Types.ObjectId;
+  canceller?: string;
   cancelledAt?: Date;
   acceptedAt?: Date;
   pickedUpAt?: Date;
+  transitAt?: Date;
   completedAt?: Date;
 }

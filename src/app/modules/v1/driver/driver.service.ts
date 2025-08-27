@@ -1,8 +1,10 @@
+import { Request } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../utils/error";
+import { QueryBuilder } from "../../../utils/queryBuilder";
 import { UserRole } from "../user/user.interface";
 import { User } from "../user/user.model";
-import { IDriver, IUpdateLocation } from "./driver.interface";
+import { IDriver, IUpdateDriver } from "./driver.interface";
 import { Driver } from "./driver.model";
 
 const registerDriver = async (payload: Partial<IDriver>) => {
@@ -36,7 +38,9 @@ const registerDriver = async (payload: Partial<IDriver>) => {
     throw error;
   }
 
-  const existingDriver = await Driver.findOne({ userId: payload.userId });
+  const existingDriver = await Driver.findOne({
+    userId: payload.userId,
+  });
   if (existingDriver) {
     const error = CustomError.conflict({
       message: "Driver already registered",
@@ -46,11 +50,6 @@ const registerDriver = async (payload: Partial<IDriver>) => {
     throw error;
   }
   const driver = await Driver.create(payload);
-  await User.findByIdAndUpdate(
-    payload.userId,
-    { role: UserRole.DRIVER },
-    { new: true }
-  );
 
   return driver;
 };
@@ -78,17 +77,26 @@ const getDriverById = async (userId: string) => {
   return driver;
 };
 
-const getAllDrivers = async () => {
-  const drivers = await Driver.find().populate("userId", "name").lean();
-  return drivers;
+const getAllDrivers = async (req: Request) => {
+  const drivers = new QueryBuilder<IDriver>(
+    Driver.find().populate("userId", "name").lean(),
+    req.query
+  )
+    .filter()
+    .search(["vehicleInfo.model"])
+    .sort()
+    .fields()
+    .paginate();
+
+  const [driverData, metaData] = await Promise.all([
+    drivers.build(),
+    drivers.getMetadata(),
+  ]);
+  return { driverData, metaData };
 };
 
-const approveDriver = async (driverId: string) => {
-  const driver = await Driver.findByIdAndUpdate(
-    driverId,
-    { isApproved: true },
-    { new: true }
-  );
+const toggleApproveDriver = async (driverId: string) => {
+  const driver = await Driver.findOne({ _id: driverId });
 
   if (!driver) {
     const error = CustomError.notFound({
@@ -99,19 +107,15 @@ const approveDriver = async (driverId: string) => {
     throw error;
   }
 
-  const user = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     driver.userId,
     { role: UserRole.DRIVER },
     { new: true }
   );
-  if (!user) {
-    const error = CustomError.notFound({
-      message: "User not found",
-      errors: ["The user associated with the driver does not exist."],
-      hints: "Please check the user ID and try again.",
-    });
-    throw error;
-  }
+
+  driver.isApproved = !driver.isApproved;
+  await driver.save();
+
   return driver;
 };
 
@@ -127,14 +131,22 @@ const toggleSuspendDriver = async (driverId: string) => {
     throw error;
   }
 
-  driver.isSuspended = !driver.isSuspended;
-  await driver.save();
+  if (!driver.isSuspended) {
+    driver.isSuspended = true;
+    driver.isAvailable = false;
+    await driver.save();
+  } else {
+    driver.isSuspended = false;
+    await driver.save();
+  }
 
   return driver;
 };
 
 const toggleAvailability = async (driverId: string) => {
-  const driver = await Driver.findOne({ userId: new mongoose.Types.ObjectId(driverId) });
+  const driver = await Driver.findOne({
+    userId: new mongoose.Types.ObjectId(driverId),
+  });
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",
@@ -150,8 +162,10 @@ const toggleAvailability = async (driverId: string) => {
   return driver.isAvailable;
 };
 
-const updateLocation = async (driverId: string, location: IUpdateLocation) => {
-  const driver = await Driver.findOne({ userId: new mongoose.Types.ObjectId(driverId) });
+const updateDriver = async (driverId: string, payload: IUpdateDriver) => {
+  const driver = await Driver.findOne({
+    userId: new mongoose.Types.ObjectId(driverId),
+  });
   if (!driver) {
     const error = CustomError.notFound({
       message: "Driver not found",
@@ -160,18 +174,30 @@ const updateLocation = async (driverId: string, location: IUpdateLocation) => {
     });
     throw error;
   }
-  driver.currentLocation = location.currentLocation;
-  await driver.save();
+   const updatedDriver = await Driver.findByIdAndUpdate(
+     { _id: driver._id },
+     { $set: payload },
+     { new: true }
+  );
+  
+   if (!updatedDriver) {
+     const error = CustomError.notFound({
+       message: "User not found",
+       errors: ["The user with the provided ID does not exist."],
+       hints: "Please check the user ID and try again.",
+     });
+     throw error;
+  }
 
-  return driver.currentLocation;
+  return updatedDriver;
 };
 
 export const DriverService = {
   registerDriver,
   getDriverById,
   getAllDrivers,
-  approveDriver,
+  toggleApproveDriver,
   toggleSuspendDriver,
   toggleAvailability,
-  updateLocation,
+  updateDriver,
 };
