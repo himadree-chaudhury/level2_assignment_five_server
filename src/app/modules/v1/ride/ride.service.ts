@@ -1,4 +1,6 @@
+import { Request } from "express";
 import { CustomError } from "../../../utils/error";
+import { QueryBuilder } from "../../../utils/queryBuilder";
 import {
   calculateFare,
   findNearestDriver,
@@ -313,7 +315,7 @@ const getRideByHistory = async (userId: string, rideId: string) => {
     return ride;
   }
 };
-const getAllRides = async (userId: string) => {
+const getAllRides = async (userId: string, req: Request) => {
   const user = await User.findById(userId);
   if (!user) {
     const error = CustomError.notFound({
@@ -325,8 +327,17 @@ const getAllRides = async (userId: string) => {
   }
 
   if (user?.role === UserRole.ADMIN) {
-    const rides = await Ride.find();
-    if (!rides) {
+    const rides = new QueryBuilder<IRide>(Ride.find(), req.query)
+      .filter()
+      .sort()
+      .paginate();
+
+    const [rideData, metaData] = await Promise.all([
+      rides.build(),
+      rides.getMetadata(),
+    ]);
+
+    if (!rideData) {
       const error = CustomError.notFound({
         message: "Ride not found",
         errors: ["The ride with the provided ID does not exist."],
@@ -334,11 +345,23 @@ const getAllRides = async (userId: string) => {
       });
       throw error;
     }
-    return rides;
+    return { rideData, metaData };
   } else {
     if (user?.role === UserRole.RIDER) {
-      const rides = await Ride.find({ riderId: userId });
-      if (!rides) {
+      const rides = new QueryBuilder<IRide>(
+        Ride.find({ riderId: userId }),
+        req.query
+      )
+        .filter()
+        .sort()
+        .paginate();
+
+      const [rideData, metaData] = await Promise.all([
+        rides.build(),
+        rides.getMetadata(),
+      ]);
+
+      if (!rideData) {
         const error = CustomError.notFound({
           message: "Ride not found",
           errors: ["The ride with the provided ID does not exist."],
@@ -346,10 +369,22 @@ const getAllRides = async (userId: string) => {
         });
         throw error;
       }
-      return rides;
+      return { rideData, metaData };
     } else if (user?.role === UserRole.DRIVER) {
-      const rides = await Ride.find({ driverId: userId });
-      if (!rides) {
+      const rides = new QueryBuilder<IRide>(
+        Ride.find({ driverId: userId }),
+        req.query
+      )
+        .filter()
+        .sort()
+        .paginate();
+
+      const [rideData, metaData] = await Promise.all([
+        rides.build(),
+        rides.getMetadata(),
+      ]);
+
+      if (!rideData) {
         const error = CustomError.notFound({
           message: "Ride not found",
           errors: ["The ride with the provided ID does not exist."],
@@ -357,7 +392,7 @@ const getAllRides = async (userId: string) => {
         });
         throw error;
       }
-      return rides;
+      return { rideData, metaData };
     }
   }
 };

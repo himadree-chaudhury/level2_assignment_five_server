@@ -27,25 +27,28 @@ const getDriverById = asyncTryCatch(async (req: Request, res: Response) => {
 });
 
 const getAllDrivers = asyncTryCatch(async (req: Request, res: Response) => {
-  const drivers = await DriverService.getAllDrivers();
+  const results = await DriverService.getAllDrivers(req);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
     message: "Drivers retrieved successfully",
-    data: drivers,
+    data: results.driverData,
+    meta: results.metaData,
   });
 });
 
-const toggleApproveDriver = asyncTryCatch(async (req: Request, res: Response) => {
-  const driverId = req.params.driverId;
-  const driver = await DriverService.toggleApproveDriver(driverId);
-  genericResponse(res, {
-    success: true,
-    status: httpStatus.OK,
-    message: "Driver approved successfully",
-    data: driver,
-  });
-});
+const toggleApproveDriver = asyncTryCatch(
+  async (req: Request, res: Response) => {
+    const driverId = req.params.driverId;
+    const driver = await DriverService.toggleApproveDriver(driverId);
+    genericResponse(res, {
+      success: true,
+      status: httpStatus.OK,
+      message: "Driver approved successfully",
+      data: driver,
+    });
+  }
+);
 
 const toggleSuspendDriver = asyncTryCatch(
   async (req: Request, res: Response) => {

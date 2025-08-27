@@ -17,12 +17,13 @@ const credentialRegister = asyncTryCatch(
 );
 
 const getAllUsers = asyncTryCatch(async (req: Request, res: Response) => {
-  const users = await userService.getAllUsers();
+  const results = await userService.getAllUsers(req);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
     message: "Users retrieved successfully",
-    data: users,
+    data: results.userData,
+    meta: results.metadata,
   });
 });
 

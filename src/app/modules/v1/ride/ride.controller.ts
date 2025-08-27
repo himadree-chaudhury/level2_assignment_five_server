@@ -98,12 +98,13 @@ const getRideByHistory = asyncTryCatch(async (req: Request, res: Response) => {
 });
 const getAllRides = asyncTryCatch(async (req: Request, res: Response) => {
   const userId = req.authUser?.userId;
-  const rides = await RideService.getAllRides(userId);
+  const results = await RideService.getAllRides(userId, req);
   genericResponse(res, {
     success: true,
     status: httpStatus.OK,
     message: "Rides retrieved successfully",
-    data: rides,
+    data: results?.rideData,
+    meta: results?.metaData,
   });
 });
 

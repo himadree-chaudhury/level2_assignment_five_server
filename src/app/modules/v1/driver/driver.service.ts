@@ -1,5 +1,7 @@
+import { Request } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../utils/error";
+import { QueryBuilder } from "../../../utils/queryBuilder";
 import { UserRole } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { IDriver, IUpdateLocation } from "./driver.interface";
@@ -75,9 +77,22 @@ const getDriverById = async (userId: string) => {
   return driver;
 };
 
-const getAllDrivers = async () => {
-  const drivers = await Driver.find().populate("userId", "name").lean();
-  return drivers;
+const getAllDrivers = async (req: Request) => {
+  const drivers = new QueryBuilder<IDriver>(
+    Driver.find().populate("userId", "name").lean(),
+    req.query
+  )
+    .filter()
+    .search(["vehicleInfo.model"])
+    .sort()
+    .fields()
+    .paginate();
+
+  const [driverData, metaData] = await Promise.all([
+    drivers.build(),
+    drivers.getMetadata(),
+  ]);
+  return { driverData, metaData };
 };
 
 const toggleApproveDriver = async (driverId: string) => {

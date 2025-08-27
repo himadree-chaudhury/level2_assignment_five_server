@@ -1,8 +1,10 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { Request } from "express";
 import envVariables from "../../../config/env";
 import { redisClient } from "../../../config/redis";
 import { CustomError } from "../../../utils/error";
+import { QueryBuilder } from "../../../utils/queryBuilder";
 import { sendMail } from "../../../utils/sendMail";
 import { IContact, IUser } from "./user.interface";
 import { User } from "./user.model";
@@ -45,9 +47,19 @@ const credentialRegister = async (payload: Partial<IUser>) => {
   };
 };
 
-const getAllUsers = async () => {
-  const users = await User.find().select("-password").lean();
-  return users;
+const getAllUsers = async (req: Request) => {
+  const users = new QueryBuilder<IUser>(User.find(), req.query)
+    .filter()
+    .search(["name", "email"])
+    .sort()
+    .fields()
+    .paginate();
+  const [userData, metadata] = await Promise.all([
+    users.build().select("-password").lean(),
+    users.getMetadata(),
+  ]);
+
+  return { userData, metadata };
 };
 
 const getUserById = async (userId: string) => {
