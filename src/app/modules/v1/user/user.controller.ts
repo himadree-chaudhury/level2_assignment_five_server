@@ -137,6 +137,18 @@ const deleteUser = asyncTryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const contact = asyncTryCatch(async (req: Request, res: Response) => {
+  const contactData = req.body;
+  await userService.contact(contactData);
+  genericResponse(res, {
+    success: true,
+    status: httpStatus.OK,
+    message: "Message sent successfully",
+  });
+});
+
+
+
 export const userController = {
   credentialRegister,
   getAllUsers,
@@ -150,4 +162,5 @@ export const userController = {
   blockUser,
   unblockUser,
   deleteUser,
+  contact
 };

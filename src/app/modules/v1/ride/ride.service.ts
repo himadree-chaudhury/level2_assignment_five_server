@@ -152,19 +152,19 @@ const cancelRide = async (userId: string, userRole: string, rideId: string) => {
       });
       throw error;
     } else {
-      const error = CustomError.forbidden({
-        message: "You are not authorized to cancel this ride",
-        errors: ["The ride does not belong to the user."],
-        hints: "Please check the ride details and try again.",
-      });
-      throw error;
+      ride.status = RideStatus.CANCELLED;
+      ride.cancelledBy = ride.driverId;
+      ride.canceller = "Driver";
+      ride.cancelledAt = new Date();
+      await ride.save();
+
+      return ride;
     }
   }
 
   ride.status = RideStatus.CANCELLED;
-  ride.cancelledBy =
-    ride.riderId?.toString() === userId ? ride.riderId : ride.driverId;
-  ride.canceller = ride.riderId?.toString() === userId ? "Rider" : "Driver";
+  ride.cancelledBy = ride.riderId;
+  ride.canceller = "Rider";
   ride.cancelledAt = new Date();
   await ride.save();
 
@@ -247,11 +247,11 @@ const completeRide = async (driverId: string, rideId: string) => {
     });
     throw error;
   }
-  if (ride.status !== RideStatus.PICKED_UP) {
+  if (ride.status !== RideStatus.IN_TRANSIT) {
     const error = CustomError.badRequest({
       message: "Ride cannot be completed",
       errors: ["The ride is not in a completable state."],
-      hints: "Only rides in the PICKED_UP state can be completed.",
+      hints: "Only rides in the IN_TRANSIT state can be completed.",
     });
     throw error;
   }

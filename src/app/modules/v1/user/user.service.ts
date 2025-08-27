@@ -376,6 +376,20 @@ const deleteUser = async (userId: string) => {
     isDeleted: deletedUser.isDeleted,
   };
 };
+const contact = async (payload: {
+  name: string;
+  email: string;
+  message: string;
+}) => {
+  const emailBody = {
+    to: `himadreebd@gmail.com`,
+    subject: "Contact Us",
+    text: `${payload.name}`,
+    html: `<p>${payload.message}</p>`,
+  };
+
+  await sendMail(emailBody);
+};
 
 export const userService = {
   credentialRegister,
@@ -390,4 +404,5 @@ export const userService = {
   blockUser,
   unblockUser,
   deleteUser,
+  contact,
 };

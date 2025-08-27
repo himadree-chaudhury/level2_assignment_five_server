@@ -44,6 +44,7 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 | **envalid**      | Environment validation        | Ensures environment variables are correctly configured and validated.                       |
 | **eslint**       | Code linting                  | Enforces coding standards and improves code quality.                                        |
 | **ts-node-dev**  | Development server            | Enables fast development with automatic TypeScript compilation and server restarts.         |
+| **nodemailer**   | Email sending                 | Simplifies sending emails from the application, useful for notifications and alerts.        |
 
 ## API Endpoint Summary
 
@@ -55,9 +56,13 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `POST /user/verify`: Verify user with a code.
 - `GET /user`: List all users (admin only).
 - `GET /user/me`: Get authenticated user details.
+- `POST /user/contact`: Contact support.
 - `PATCH /user/block/:userId`: Block a user (admin only).
 - `PATCH /user/unblock/:userId`: Unblock a user (admin only).
 - `PATCH /user/delete/:userId`: Soft delete a user (admin only).
+- `PATCH /user/add-sos-contact`: Add an SOS contact for the user.
+- `PATCH /user/update-sos-contact`: Update an SOS contact for the user.
+- `PATCH /user/remove-sos-contact`: Remove an SOS contact for the user.
 
 ### Auth Routes
 
@@ -71,9 +76,9 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `PATCH /driver/update`: Update driver details (`name`, `phone`, `picture`, `vehicleNumber`).
 - `GET /driver`: List all drivers (admin only).
 - `GET /driver/me`: Get authenticated driver details.
-- `PATCH /driver/block/:driverId`: Block a driver (admin only).
-- `PATCH /driver/unblock/:driverId`: Unblock a driver (admin only).
-- `PATCH /driver/delete/:driverId`: Soft delete a driver (admin only).
+- `PATCH /driver/availability`: Update driver availability status (driver only).
+- `PATCH /driver/suspend/:driverId`: Toggle suspend a driver (admin only).
+- `PATCH /driver/approve/:driverId`: Toggle approve a driver (admin only).
 
 ### Ride Routes
 
@@ -81,8 +86,10 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - `PATCH /ride/accept/:rideId`: Accept a ride (driver only).
 - `PATCH /ride/cancel/:rideId`: Cancel a ride (rider or driver).
 - `PATCH /ride/pickup/:rideId`: Mark ride as picked up (driver only).
+- `PATCH /ride/transit/:rideId`: Mark ride as in transit (driver only).
 - `PATCH /ride/complete/:rideId`: Complete a ride (driver only).
 - `GET /ride/:rideId`: Get ride details.
+- `GET /ride/all`: Get all ride details.
 
 ### Stat Routes
 
@@ -133,6 +140,10 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
    REDIS_PASSWORD=your_redis_password
    REDIS_HOST=your_redis_host
    REDIS_PORT=11346
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your_email@gmail.com
+   SMTP_PASS=your_email_password
    ```
 
 4. **Run the Application**:
@@ -172,6 +183,10 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - **REDIS_PASSWORD**: Password for Redis.
 - **REDIS_HOST**: Hostname for Redis
 - **REDIS_PORT**: Port number for Redis (default: 11346).
+- **SMTP_HOST**: SMTP server host (e.g., smtp.gmail.com).
+- **SMTP_PORT**: SMTP server port (default: 587).
+- **SMTP_USER**: SMTP username (e.g., your_email@gmail.com).
+- **SMTP_PASS**: SMTP password.
 
 ## Future Enhancements
 
@@ -182,7 +197,6 @@ This project is developed with a focus on security (using JWT and bcrypt), scala
 - Add **ride rating systems** for users and drivers.
 - Support **multi-language** API responses.
 - Implement **push notifications** and **in-app chat** for better communication.
-- Enhance **analytics** with real-time dashboards.
 
 ## Contributing
 

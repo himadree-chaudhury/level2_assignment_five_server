@@ -74,3 +74,8 @@ userRoutes.patch(
   checkAuth(UserRole.ADMIN),
   userController.deleteUser
 );
+
+userRoutes.post(
+  "/contact",
+  userController.contact
+)
